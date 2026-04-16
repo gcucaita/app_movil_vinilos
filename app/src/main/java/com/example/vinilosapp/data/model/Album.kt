@@ -13,4 +13,5 @@ data class Album(
     @SerializedName("description") val description: String?,
     @SerializedName("genre") val genre: String?,
     @SerializedName("recordLabel") val recordLabel: String?
+
 )
