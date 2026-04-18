@@ -1,4 +1,4 @@
-package com.example.vinilosapp.data.model
+package com.example.vinilosapp.domain.model
 
 import com.google.gson.annotations.SerializedName
 

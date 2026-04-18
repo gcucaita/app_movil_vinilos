@@ -1,4 +1,4 @@
-package com.example.vinilosapp.data.model
+package com.example.vinilosapp.domain.model
 
 import com.google.gson.annotations.SerializedName
 
@@ -13,5 +13,4 @@ data class Album(
     @SerializedName("description") val description: String?,
     @SerializedName("genre") val genre: String?,
     @SerializedName("recordLabel") val recordLabel: String?
-
 )

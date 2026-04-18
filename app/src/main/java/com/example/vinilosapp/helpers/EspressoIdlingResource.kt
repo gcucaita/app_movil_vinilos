@@ -1,4 +1,4 @@
-package com.example.vinilosapp.testing
+package com.example.vinilosapp.helpers
 
 import androidx.test.espresso.idling.CountingIdlingResource
 

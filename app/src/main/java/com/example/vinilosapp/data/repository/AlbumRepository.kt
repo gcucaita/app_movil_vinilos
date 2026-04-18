@@ -2,14 +2,15 @@ package com.example.vinilosapp.data.repository
 
 import android.util.Log
 import com.example.vinilosapp.data.cache.CacheManager
-import com.example.vinilosapp.data.model.Album
-import com.example.vinilosapp.data.network.RetrofitInstance
 import com.example.vinilosapp.data.network.VinilosApiService
-import com.example.vinilosapp.testing.EspressoIdlingResource
+import com.example.vinilosapp.data.serviceadapter.AlbumServiceAdapter
+import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.helpers.EspressoIdlingResource
 
 class AlbumRepository(
-    private val apiService: VinilosApiService = RetrofitInstance.api
+    private val albumServiceAdapter: AlbumServiceAdapter = AlbumServiceAdapter()
 ) {
+    constructor(apiService: VinilosApiService) : this(AlbumServiceAdapter(apiService))
 
     suspend fun getAllAlbums(): List<Album>? {
         CacheManager.getAlbumsList()?.let { cachedAlbums ->
@@ -21,7 +22,7 @@ class AlbumRepository(
         incrementIdlingResource()
 
         return try {
-            val response = apiService.getAlbums()
+            val response = albumServiceAdapter.getAlbums()
             if (response.isSuccessful) {
                 val albums = response.body()
                 logDebug("Data received: $albums")
@@ -31,8 +32,8 @@ class AlbumRepository(
                 logError("API Error Response: ${response.errorBody()?.string()}")
                 null
             }
-        } catch (e: Exception) {
-            logError("Network Exception: ${e.message}", e)
+        } catch (exception: Exception) {
+            logError("Network Exception: ${exception.message}", exception)
             null
         } finally {
             decrementIdlingResource()

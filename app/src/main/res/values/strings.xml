@@ -1,3 +1,55 @@
 <resources>
     <string name="app_name">Vinilos App</string>
+    <string name="add">Add</string>
+
+    <string name="archive_title">THE ARCHIVE</string>
+    <string name="albums_title">Todos los\nÁlbumes</string>
+    <string name="albums_subtitle">Explora la curaduría completa de grabaciones históricas y lanzamientos contemporáneos en nuestra bóveda digital.</string>
+    <string name="search_hint">Buscar por título, año o sello...</string>
+    <string name="albums_error">No se pudieron cargar los álbumes. Toca ↻ para reintentar.</string>
+    <string name="albums_error_toast">Error cargando álbumes</string>
+    <string name="unknown_artist">Artista desconocido</string>
+    <string name="album_cover">Carátula del álbum</string>
+
+    <string name="chip_all_records">All Records</string>
+    <string name="chip_jazz">Jazz</string>
+    <string name="chip_rock">Rock</string>
+    <string name="chip_salsa">Salsa</string>
+
+    <string name="album_1_title">Kind of Blue</string>
+    <string name="album_1_artist">Miles Davis</string>
+    <string name="album_1_meta">1959 · COLUMBIA</string>
+
+    <string name="album_2_title">Selected Ambie...</string>
+    <string name="album_2_artist">Aphex Twin</string>
+    <string name="album_2_meta">1992 · APOLLO</string>
+
+    <string name="album_3_title">Music for 18 ...</string>
+    <string name="album_3_artist">Steve Reich</string>
+    <string name="album_3_meta">1978 · ECM</string>
+
+    <string name="album_4_title">Innerspeaker</string>
+    <string name="album_4_artist">Tame Impala</string>
+    <string name="album_4_meta">2010 · MODULAR</string>
+
+    <string name="album_5_title">A Love Supre...</string>
+    <string name="album_5_artist">John Coltrane</string>
+    <string name="album_5_meta">1965 · IMPULSE!</string>
+
+    <string name="album_6_title">The Low End ...</string>
+    <string name="album_6_artist">A Tribe Called Quest</string>
+    <string name="album_6_meta">1991 · JIVE</string>
+
+    <string name="album_7_title">Forest Pulse</string>
+    <string name="album_7_artist">Unknown Artist</string>
+    <string name="album_7_meta">1988 · ARCHIVE</string>
+
+    <string name="album_8_title">Studio Echoes</string>
+    <string name="album_8_artist">Session Unit</string>
+    <string name="album_8_meta">1999 · ARCHIVE</string>
+
+    <string name="nav_albums">Albums</string>
+    <string name="nav_artists">Artists</string>
+    <string name="nav_collectors">Collectors</string>
+    <string name="nav_collections">Collections</string>
 </resources>

@@ -1,7 +1,7 @@
 package com.example.vinilosapp.data.cache
 
 import android.util.LruCache
-import com.example.vinilosapp.data.model.Album
+import com.example.vinilosapp.domain.model.Album
 
 object CacheManager {
     private const val DEFAULT_CACHE_MAX_SIZE = 15
