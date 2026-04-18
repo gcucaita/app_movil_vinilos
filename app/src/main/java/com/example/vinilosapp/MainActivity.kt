@@ -1,7 +1,9 @@
 package com.example.vinilosapp
 
+import android.animation.ObjectAnimator
 import android.os.Bundle
 import android.view.View
+import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
@@ -20,6 +22,8 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var albumListViewModel: AlbumListViewModel
     private lateinit var albumListAdapter: AlbumListAdapter
+    private lateinit var refreshButton: TextView
+    private var refreshRotationAnimator: ObjectAnimator? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         val albumsRecyclerView = findViewById<RecyclerView>(R.id.albumsRecyclerView)
         val loadingIndicator = findViewById<View>(R.id.loadingIndicator)
         val errorText = findViewById<TextView>(R.id.errorText)
-        val refreshButton = findViewById<TextView>(R.id.refreshButton)
+        refreshButton = findViewById(R.id.refreshButton)
 
         albumListAdapter = AlbumListAdapter()
         albumsRecyclerView.apply {
@@ -51,26 +55,67 @@ class MainActivity : AppCompatActivity() {
                 is AlbumListUiState.Loading -> {
                     loadingIndicator.visibility = View.VISIBLE
                     errorText.visibility = View.GONE
+                    startRefreshLoadingAnimation()
                 }
 
                 is AlbumListUiState.Success -> {
                     loadingIndicator.visibility = View.GONE
                     errorText.visibility = View.GONE
                     albumListAdapter.submitList(state.albums)
+                    stopRefreshLoadingAnimation()
                 }
 
                 is AlbumListUiState.Error -> {
                     loadingIndicator.visibility = View.GONE
                     errorText.visibility = View.VISIBLE
                     Toast.makeText(this, getString(R.string.albums_error_toast), Toast.LENGTH_SHORT).show()
+                    stopRefreshLoadingAnimation()
                 }
             }
         }
 
         refreshButton.setOnClickListener {
+            animateRefreshTap()
             albumListViewModel.loadAlbums()
         }
 
         albumListViewModel.loadAlbums()
+    }
+
+    private fun animateRefreshTap() {
+        refreshButton.animate()
+            .scaleX(0.85f)
+            .scaleY(0.85f)
+            .setDuration(90)
+            .withEndAction {
+                refreshButton.animate()
+                    .scaleX(1f)
+                    .scaleY(1f)
+                    .setDuration(120)
+                    .start()
+            }
+            .start()
+    }
+
+    private fun startRefreshLoadingAnimation() {
+        if (refreshRotationAnimator?.isRunning == true) return
+
+        refreshRotationAnimator = ObjectAnimator.ofFloat(
+            refreshButton,
+            View.ROTATION,
+            refreshButton.rotation,
+            refreshButton.rotation + 360f
+        ).apply {
+            duration = 700
+            repeatCount = ObjectAnimator.INFINITE
+            interpolator = LinearInterpolator()
+            start()
+        }
+    }
+
+    private fun stopRefreshLoadingAnimation() {
+        refreshRotationAnimator?.cancel()
+        refreshRotationAnimator = null
+        refreshButton.rotation = 0f
     }
 }
