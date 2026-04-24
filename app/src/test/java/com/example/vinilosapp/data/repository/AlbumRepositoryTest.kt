@@ -1,11 +1,11 @@
 package com.example.vinilosapp.data.repository
 
 import com.example.vinilosapp.data.cache.CacheManager
-import com.example.vinilosapp.data.model.Album
-import com.example.vinilosapp.data.model.AlbumComment
-import com.example.vinilosapp.data.model.Performer
-import com.example.vinilosapp.data.model.Track
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.domain.model.AlbumComment
+import com.example.vinilosapp.domain.model.Performer
+import com.example.vinilosapp.domain.model.Track
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.runner.RunWith
