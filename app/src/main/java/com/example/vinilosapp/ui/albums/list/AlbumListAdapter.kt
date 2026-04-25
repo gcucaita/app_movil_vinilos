@@ -1,5 +1,6 @@
 package com.example.vinilosapp.ui.albums.list
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.vinilosapp.R
 import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.ui.albums.detail.AlbumDetailActivity
 
-class AlbumListAdapter : ListAdapter<Album, AlbumListAdapter.AlbumViewHolder>(DiffCallback) {
+class AlbumListAdapter(
+    private val onAlbumClick: (Album) -> Unit
+) : ListAdapter<Album, AlbumListAdapter.AlbumViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AlbumViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_album, parent, false)
@@ -20,7 +24,11 @@ class AlbumListAdapter : ListAdapter<Album, AlbumListAdapter.AlbumViewHolder>(Di
     }
 
     override fun onBindViewHolder(holder: AlbumViewHolder, position: Int) {
-        holder.bind(getItem(position))
+        val album = getItem(position)
+        holder.bind(album)
+        holder.itemView.setOnClickListener {
+            onAlbumClick(album)
+        }
     }
 
     class AlbumViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -51,7 +59,6 @@ class AlbumListAdapter : ListAdapter<Album, AlbumListAdapter.AlbumViewHolder>(Di
 
     private object DiffCallback : DiffUtil.ItemCallback<Album>() {
         override fun areItemsTheSame(oldItem: Album, newItem: Album): Boolean = oldItem.id == newItem.id
-
         override fun areContentsTheSame(oldItem: Album, newItem: Album): Boolean = oldItem == newItem
     }
 }

@@ -19,7 +19,7 @@ android {
 
     buildTypes {
         getByName("debug") {
-            buildConfigField("String", "BASE_URL", "\"http://192.168.40.81:3000/\"")
+            buildConfigField("String", "BASE_URL", "\"http://192.168.20.62:3000/\"")
         }
 
         getByName("release") {
@@ -33,6 +33,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        viewBinding = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -65,4 +66,6 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(libs.androidx.espresso.idling.resource)
     androidTestImplementation(libs.mockwebserver)
+    implementation(libs.androidx.fragment.ktx)
+    implementation(libs.androidx.activity.ktx)
 }
