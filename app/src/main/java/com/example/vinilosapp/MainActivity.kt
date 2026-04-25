@@ -17,7 +17,8 @@ import com.example.vinilosapp.R
 import com.example.vinilosapp.presentation.uistate.AlbumListUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumListViewModel
 import com.example.vinilosapp.ui.albums.list.AlbumListAdapter
-
+import android.content.Intent
+import com.example.vinilosapp.ui.albums.detail.AlbumDetailActivity
 class MainActivity : AppCompatActivity() {
 
     private lateinit var albumListViewModel: AlbumListViewModel
@@ -41,7 +42,11 @@ class MainActivity : AppCompatActivity() {
         val errorText = findViewById<TextView>(R.id.errorText)
         refreshButton = findViewById(R.id.refreshButton)
 
-        albumListAdapter = AlbumListAdapter()
+        albumListAdapter = AlbumListAdapter { album ->
+            val intent = Intent(this, AlbumDetailActivity::class.java)
+            intent.putExtra("albumId", album.id)
+            startActivity(intent)
+        }
         albumsRecyclerView.apply {
             layoutManager = GridLayoutManager(this@MainActivity, 2)
             adapter = albumListAdapter

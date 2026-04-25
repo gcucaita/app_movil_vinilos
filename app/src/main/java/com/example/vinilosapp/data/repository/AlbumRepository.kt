@@ -39,6 +39,25 @@ class AlbumRepository(
             decrementIdlingResource()
         }
     }
+    suspend fun getAlbum(id: Int): Album? {
+        incrementIdlingResource()
+        return try {
+            val response = albumServiceAdapter.getAlbum(id)
+            if (response.isSuccessful) {
+                val album = response.body()
+                logDebug("Album received: $album")
+                album
+            } else {
+                logError("API Error Response: ${response.errorBody()?.string()}")
+                null
+            }
+        } catch (exception: Exception) {
+            logError("Network Exception: ${exception.message}", exception)
+            null
+        } finally {
+            decrementIdlingResource()
+        }
+    }
 
     private fun incrementIdlingResource() {
         runCatching { EspressoIdlingResource.increment() }

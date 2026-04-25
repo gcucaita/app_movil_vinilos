@@ -2,7 +2,7 @@
     <string name="app_name">Vinilos App</string>
     <string name="add">Add</string>
 
-    <string name="archive_title">ALBUNES</string>
+    <string name="archive_title">ÁLBUMES</string>
     <string name="albums_title">Todos los\nÁlbumes</string>
     <string name="albums_subtitle">Explora la curaduría completa de grabaciones históricas y lanzamientos contemporáneos en nuestra bóveda digital.</string>
     <string name="search_hint">Buscar por título, año o sello...</string>
