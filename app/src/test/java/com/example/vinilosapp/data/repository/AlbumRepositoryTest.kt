@@ -1,21 +1,21 @@
 package com.example.vinilosapp.data.repository
 
 import com.example.vinilosapp.data.cache.CacheManager
-import com.example.vinilosapp.data.network.VinilosApiService
-import com.example.vinilosapp.domain.model.Album
-import com.example.vinilosapp.domain.model.AlbumComment
-import com.example.vinilosapp.domain.model.Performer
-import com.example.vinilosapp.domain.model.Track
+import com.example.vinilosapp.testutil.AlbumFixtures
+import com.example.vinilosapp.testutil.FakeVinilosApiService
 import kotlinx.coroutines.runBlocking
-import org.junit.Before
-import org.junit.runner.RunWith
-import okhttp3.ResponseBody
+import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import retrofit2.Response
 
+/**
+ * Pruebas unitarias HU01 - Consultar catálogo de álbumes
+ */
 @RunWith(RobolectricTestRunner::class)
 class AlbumRepositoryTest {
 
@@ -24,52 +24,24 @@ class AlbumRepositoryTest {
         CacheManager.clearAllCaches()
     }
 
-    @Test
-    fun getAllAlbums_returnsAlbums_whenApiResponseIsSuccessful() = runBlocking {
-        val expectedAlbums = listOf(
-            Album(
-                id = 100,
-                name = "Buscando America",
-                cover = "https://example.com/cover.jpg",
-                performers = listOf(
-                    Performer(
-                        id = 1,
-                        name = "Ruben Blades",
-                        image = null,
-                        description = null,
-                        birthDate = null
-                    )
-                ),
-                tracks = listOf(
-                    Track(
-                        id = 1,
-                        name = "Decisiones",
-                        duration = "5:05"
-                    )
-                ),
-                comments = listOf(
-                    AlbumComment(
-                        id = 1,
-                        description = "Excelente",
-                        rating = 5
-                    )
-                ),
-                releaseDate = "1984-08-01T05:00:00.000Z",
-                description = "Album de prueba",
-                genre = "Salsa",
-                recordLabel = "Elektra"
-            )
-        )
-        val repository = AlbumRepository(FakeVinilosApiService.success(expectedAlbums))
-
-        val result = repository.getAllAlbums()
-
-        assertEquals(expectedAlbums, result)
+    @After
+    fun tearDown() {
+        CacheManager.clearAllCaches()
     }
 
     @Test
-    fun getAllAlbums_returnsNull_whenApiThrowsException() = runBlocking {
-        val repository = AlbumRepository(FakeVinilosApiService.exception(RuntimeException("network error")))
+    fun `getAllAlbums devuelve lista cuando la API responde 200`() = runBlocking {
+        val expected = AlbumFixtures.catalog()
+        val repository = AlbumRepository(FakeVinilosApiService.success(expected))
+
+        val result = repository.getAllAlbums()
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `getAllAlbums devuelve null cuando la API lanza excepcion`() = runBlocking {
+        val repository = AlbumRepository(FakeVinilosApiService.throwing(RuntimeException("network")))
 
         val result = repository.getAllAlbums()
 
@@ -77,8 +49,8 @@ class AlbumRepositoryTest {
     }
 
     @Test
-    fun getAllAlbums_returnsNull_whenApiResponseIsNotSuccessful() = runBlocking {
-        val repository = AlbumRepository(FakeVinilosApiService.error())
+    fun `getAllAlbums devuelve null cuando la API responde con error HTTP`() = runBlocking {
+        val repository = AlbumRepository(FakeVinilosApiService.httpError(code = 500))
 
         val result = repository.getAllAlbums()
 
@@ -86,56 +58,58 @@ class AlbumRepositoryTest {
     }
 
     @Test
-    fun getAllAlbums_returnsCachedAlbums_whenAvailable() = runBlocking {
-        val expectedAlbums = listOf(
-            Album(
-                id = 100,
-                name = "Buscando America",
-                cover = "https://example.com/cover.jpg",
-                performers = emptyList(),
-                tracks = emptyList(),
-                comments = emptyList(),
-                releaseDate = "1984-08-01T05:00:00.000Z",
-                description = "Album de prueba",
-                genre = "Salsa",
-                recordLabel = "Elektra"
-            )
-        )
-        val apiService = FakeVinilosApiService.success(expectedAlbums)
-        val repository = AlbumRepository(apiService)
+    fun `getAllAlbums sirve desde cache en la segunda llamada`() = runBlocking {
+        val expected = AlbumFixtures.catalog()
+        val api = FakeVinilosApiService.success(expected)
+        val repository = AlbumRepository(api)
 
-        val firstResult = repository.getAllAlbums()
-        val secondResult = repository.getAllAlbums()
+        val first = repository.getAllAlbums()
+        val second = repository.getAllAlbums()
 
-        assertEquals(expectedAlbums, firstResult)
-        assertEquals(expectedAlbums, secondResult)
-        assertEquals(1, apiService.callCount)
-    }
-}
-
-private class FakeVinilosApiService(
-    private val responseProvider: suspend () -> Response<List<Album>>
-) : VinilosApiService {
-
-    var callCount: Int = 0
-        private set
-
-    override suspend fun getAlbums(): Response<List<Album>> {
-        callCount++
-        return responseProvider()
+        assertEquals(expected, first)
+        assertEquals(expected, second)
+        assertEquals(1, api.albumsCallCount)
     }
 
-    companion object {
-        fun success(albums: List<Album>) = FakeVinilosApiService {
-            Response.success(albums)
-        }
+    @Test
+    fun `getAllAlbums refresca despues de invalidar cache`() = runBlocking {
+        val expected = AlbumFixtures.catalog()
+        val api = FakeVinilosApiService.success(expected)
+        val repository = AlbumRepository(api)
 
-        fun error() = FakeVinilosApiService {
-            Response.error(500, ResponseBody.create(null, "server error"))
-        }
+        repository.getAllAlbums()
+        CacheManager.invalidateAlbumsListCache()
+        repository.getAllAlbums()
 
-        fun exception(throwable: Throwable) = FakeVinilosApiService {
-            throw throwable
-        }
+        assertEquals(2, api.albumsCallCount)
+    }
+
+    @Test
+    fun `getAlbum devuelve album cuando la API responde 200`() = runBlocking {
+        val expected = AlbumFixtures.album(id = 100)
+        val repository = AlbumRepository(FakeVinilosApiService.successAlbum(expected))
+
+        val result = repository.getAlbum(100)
+
+        assertNotNull(result)
+        assertEquals(expected.id, result?.id)
+    }
+
+    @Test
+    fun `getAlbum devuelve null cuando la API responde con error HTTP`() = runBlocking {
+        val repository = AlbumRepository(FakeVinilosApiService.httpError(code = 404))
+
+        val result = repository.getAlbum(999)
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `getAlbum devuelve null cuando la API lanza excepcion`() = runBlocking {
+        val repository = AlbumRepository(FakeVinilosApiService.throwing(IllegalStateException("oops")))
+
+        val result = repository.getAlbum(1)
+
+        assertNull(result)
     }
 }
