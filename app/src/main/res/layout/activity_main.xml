@@ -20,38 +20,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="☰"
-                android:textColor="@color/green_accent"
-                android:textSize="20sp" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_weight="1"
-                android:fontFamily="serif"
-                android:text="@string/archive_title"
-                android:textColor="@color/title_text"
-                android:textSize="21sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/refreshButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="↻"
-                android:textColor="@color/green_accent"
-                android:textSize="22sp" />
-        </LinearLayout>
+        <include
+            android:id="@+id/toolbar"
+            layout="@layout/view_header"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -73,6 +44,7 @@
             android:textColor="@color/body_text"
             android:textSize="16sp" />
 
+        <!-- SEARCH -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="48dp"
@@ -98,6 +70,7 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
+        <!-- CHIPS SCROLL CORREGIDO -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,57 +78,10 @@
             android:scrollbars="none">
 
             <LinearLayout
+                android:id="@+id/chipsContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_chip_selected"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="9dp"
-                    android:text="@string/chip_all_records"
-                    android:textAllCaps="true"
-                    android:textColor="@color/green_accent"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="9dp"
-                    android:text="@string/chip_jazz"
-                    android:textAllCaps="true"
-                    android:textColor="@color/chip_text"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="9dp"
-                    android:text="@string/chip_rock"
-                    android:textAllCaps="true"
-                    android:textColor="@color/chip_text"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:background="@drawable/bg_chip_unselected"
-                    android:paddingHorizontal="18dp"
-                    android:paddingVertical="9dp"
-                    android:text="@string/chip_salsa"
-                    android:textAllCaps="true"
-                    android:textColor="@color/chip_text"
-                    android:textSize="13sp" />
-            </LinearLayout>
+                android:orientation="horizontal"/>
         </HorizontalScrollView>
 
         <TextView
@@ -180,6 +106,7 @@
             android:overScrollMode="never"
             tools:itemCount="8"
             tools:listitem="@layout/item_album" />
+
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -215,7 +142,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="sans-serif-medium"
             android:gravity="center"
             android:text="@string/nav_albums"
             android:textAllCaps="true"
@@ -226,7 +152,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/nav_artists"
             android:textAllCaps="true"
@@ -237,7 +162,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/nav_collectors"
             android:textAllCaps="true"
@@ -248,7 +172,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:fontFamily="sans-serif"
             android:gravity="center"
             android:text="@string/nav_collections"
             android:textAllCaps="true"

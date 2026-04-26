@@ -11,6 +11,7 @@ import com.example.vinilosapp.R
 import com.example.vinilosapp.databinding.ActivityAlbumDetailBinding
 import com.example.vinilosapp.presentation.uistate.AlbumDetailUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumDetailViewModel
+import android.widget.ImageView
 
 class AlbumDetailActivity : AppCompatActivity() {
 
@@ -33,6 +34,10 @@ class AlbumDetailActivity : AppCompatActivity() {
         setupRecyclerView()
         viewModel.loadAlbum(albumId)
         observeViewModel()
+        val toolbar = findViewById<View>(R.id.toolbar)
+        val btnNavIcon = toolbar.findViewById<ImageView>(R.id.btnNavIcon)
+        btnNavIcon.setImageResource(R.drawable.outline_arrow_back_24)
+        btnNavIcon.setOnClickListener { finish() }
     }
 
     private fun setupRecyclerView() {
