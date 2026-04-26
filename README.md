@@ -49,6 +49,8 @@ Como el APK no proviene de Google Play, Android pedirá permiso explícito para 
 
 > 💡 La primera carga puede tardar unos segundos mientras el backend en Render despierta.
 
+- Al consumir directamente la API desplegada, no es necesario levantar el backend a través de Docker.
+
 ---
 
 ## 🛠️ (Opcional) Generar el APK desde el código fuente
