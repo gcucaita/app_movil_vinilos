@@ -1,6 +1,5 @@
 package com.example.vinilosapp.ui.albums.list
 
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.vinilosapp.R
 import com.example.vinilosapp.domain.model.Album
-import com.example.vinilosapp.ui.albums.detail.AlbumDetailActivity
 
 class AlbumListAdapter(
     private val onAlbumClick: (Album) -> Unit
@@ -39,8 +37,11 @@ class AlbumListAdapter(
 
         fun bind(album: Album) {
             titleText.text = album.name
-            artistText.text = album.performers?.firstOrNull()?.name ?: itemView.context.getString(R.string.unknown_artist)
-            metaText.text = buildMeta(album)
+            artistText.text = formatAlbumListArtistName(
+                album.performers,
+                itemView.context.getString(R.string.unknown_artist),
+            )
+            metaText.text = formatAlbumListMetaText(album)
 
             Glide.with(itemView)
                 .load(album.cover)
@@ -48,12 +49,6 @@ class AlbumListAdapter(
                 .error(R.drawable.cover_2)
                 .centerCrop()
                 .into(coverImage)
-        }
-
-        private fun buildMeta(album: Album): String {
-            val year = album.releaseDate?.take(4)?.takeIf { it.all(Char::isDigit) } ?: "----"
-            val label = album.recordLabel?.uppercase()?.ifBlank { "N/A" } ?: "N/A"
-            return "$year · $label"
         }
     }
 
