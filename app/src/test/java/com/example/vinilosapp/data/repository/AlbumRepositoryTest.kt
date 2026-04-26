@@ -4,8 +4,8 @@ import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.domain.model.Album
 import kotlinx.coroutines.runBlocking
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.ResponseBody.Companion.toResponseBody
+import okhttp3.MediaType
+import okhttp3.ResponseBody
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -141,8 +141,9 @@ class AlbumRepositoryTest {
         recordLabel = "Elektra",
     )
 
-    private fun errorBody() = "server error".toResponseBody("text/plain".toMediaTypeOrNull())
-
+private fun errorBody(): ResponseBody =
+    ResponseBody.create(MediaType.parse("text/plain"), "server error")
+    
     private class FakeVinilosApiService(
         private val onGetAlbums: () -> Response<List<Album>> = { error("getAlbums no stubbeado") },
         private val onGetAlbum: (Int) -> Response<Album> = { error("getAlbum no stubbeado") },
