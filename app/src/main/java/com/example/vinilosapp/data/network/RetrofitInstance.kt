@@ -12,6 +12,9 @@ object RetrofitInstance {
     private var baseUrlOverride: String? = null
 
     @Volatile
+    private var apiOverride: VinilosApiService? = null
+
+    @Volatile
     private var retrofit: Retrofit? = null
 
     private fun currentBaseUrl(): String = baseUrlOverride ?: BuildConfig.BASE_URL
@@ -20,6 +23,12 @@ object RetrofitInstance {
         synchronized(this) {
             baseUrlOverride = baseUrl
             retrofit = null
+        }
+    }
+
+    fun setApiForTesting(apiService: VinilosApiService?) {
+        synchronized(this) {
+            apiOverride = apiService
         }
     }
 
@@ -39,6 +48,8 @@ object RetrofitInstance {
 
     val api: VinilosApiService
         get() {
+            apiOverride?.let { return it }
+
             val instance = retrofit ?: synchronized(this) {
                 retrofit ?: createRetrofit(currentBaseUrl()).also { retrofit = it }
             }
@@ -46,6 +57,10 @@ object RetrofitInstance {
         }
 
     fun reset() {
-        setBaseUrlForTesting(null)
+        synchronized(this) {
+            apiOverride = null
+            baseUrlOverride = null
+            retrofit = null
+        }
     }
 }

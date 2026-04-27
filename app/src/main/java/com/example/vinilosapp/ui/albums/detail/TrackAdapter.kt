@@ -13,9 +13,9 @@ class TrackAdapter(private var tracks: List<Track>) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(track: Track, position: Int) {
-            binding.tvTrackNumber.text = String.format("%02d", position + 1)
+            binding.tvTrackNumber.text = formatTrackNumber(position)
             binding.tvTrackName.text = track.name
-            binding.tvTrackDuration.text = track.duration ?: ""
+            binding.tvTrackDuration.text = formatTrackDuration(track.duration)
         }
     }
 

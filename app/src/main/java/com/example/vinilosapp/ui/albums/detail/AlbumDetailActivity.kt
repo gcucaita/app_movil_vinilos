@@ -64,10 +64,10 @@ class AlbumDetailActivity : AppCompatActivity() {
 
                     val album = state.album
                     binding.tvName.text = album.name
-                    binding.tvDescription.text = album.description ?: "Sin descripción"
-                    binding.tvRecordLabel.text = album.recordLabel ?: ""
-                    binding.tvArtist.text = album.performers?.firstOrNull()?.name ?: "Artista desconocido"
-                    binding.tvYear.text = album.releaseDate?.take(4) ?: ""
+                    binding.tvDescription.text = formatAlbumDetailDescription(album.description, "Sin descripción")
+                    binding.tvRecordLabel.text = formatAlbumDetailRecordLabel(album.recordLabel)
+                    binding.tvArtist.text = formatAlbumDetailArtistName(album.performers, "Artista desconocido")
+                    binding.tvYear.text = formatAlbumDetailYear(album.releaseDate)
 
                     Glide.with(this)
                         .load(album.cover)
