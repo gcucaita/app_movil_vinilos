@@ -1,9 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
+
     <style name="Base.Theme.VinilosApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+
+        <!-- Tipografía global -->
+
+
+        <!-- (Opcional) Colores -->
+        <!-- <item name="colorPrimary">@color/tu_color</item> -->
+
     </style>
 
     <style name="Theme.VinilosApp" parent="Base.Theme.VinilosApp" />
+    <style name="RoundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
 </resources>
