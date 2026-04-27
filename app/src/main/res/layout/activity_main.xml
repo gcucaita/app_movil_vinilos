@@ -28,11 +28,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
-            android:fontFamily="serif"
+            android:fontFamily="@font/noto_serif_bold"
             android:lineSpacingExtra="-2sp"
             android:text="@string/albums_title"
-            android:textColor="@color/title_text"
-            android:textSize="44sp"
+            android:textColor="@color/white"
+            android:textSize="48sp"
             android:textStyle="bold" />
 
         <TextView
@@ -41,8 +41,8 @@
             android:layout_marginTop="8dp"
             android:maxLines="2"
             android:text="@string/albums_subtitle"
-            android:textColor="@color/body_text"
-            android:textSize="16sp" />
+            android:textColor="@color/secondary_soft"
+            android:textSize="18sp" />
 
         <!-- SEARCH -->
         <LinearLayout
@@ -54,23 +54,30 @@
             android:orientation="horizontal"
             android:paddingHorizontal="12dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔎"
-                android:textColor="@color/search_icon"
-                android:textSize="15sp" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/search"
+                android:tint="@color/search_text"/>
 
-            <TextView
+            <EditText
+                android:id="@+id/searchInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="@string/search_hint"
+                android:hint="@string/search_hint"
                 android:textColor="@color/search_text"
-                android:textSize="14sp" />
+                android:textColorHint="@color/search_text"
+                android:textSize="18sp"
+                android:fontFamily="@font/manrope_regular"
+                android:inputType="text"
+                android:background="@null"
+                android:imeOptions="actionSearch"
+                android:maxLines="1"/>
+
         </LinearLayout>
 
-        <!-- CHIPS SCROLL CORREGIDO -->
+        <!-- CHIPS -->
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -82,6 +89,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"/>
+
         </HorizontalScrollView>
 
         <TextView
@@ -109,22 +117,32 @@
 
     </LinearLayout>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/fabAdd"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="84dp"
-        android:backgroundTint="@android:color/transparent"
-        android:contentDescription="@string/add"
-        android:src="@android:drawable/ic_input_add"
-        app:borderWidth="3dp"
-        app:elevation="0dp"
-        app:fabCustomSize="60dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:rippleColor="@color/green_accent"
-        app:tint="@color/green_accent" />
+
+        android:text="+"
+        android:textSize="24sp"
+        android:textColor="@color/green_accent"
+
+        android:insetTop="0dp"
+        android:insetBottom="0dp"
+        android:insetLeft="0dp"
+        android:insetRight="0dp"
+
+        android:padding="0dp"
+
+    app:backgroundTint="@android:color/transparent"
+    app:strokeColor="@color/green_accent"
+    app:strokeWidth="2dp"
+    app:cornerRadius="30dp"
+
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"/>
 
     <LinearLayout
         android:id="@+id/bottomNav"
@@ -177,6 +195,7 @@
             android:textAllCaps="true"
             android:textColor="@color/nav_text"
             android:textSize="12sp" />
+
     </LinearLayout>
 
     <ProgressBar

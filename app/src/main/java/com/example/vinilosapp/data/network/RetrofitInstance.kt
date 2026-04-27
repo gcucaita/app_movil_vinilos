@@ -1,8 +1,10 @@
 package com.example.vinilosapp.data.network
 
 import com.example.vinilosapp.BuildConfig
+import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object RetrofitInstance {
 
@@ -22,8 +24,15 @@ object RetrofitInstance {
     }
 
     private fun createRetrofit(baseUrl: String): Retrofit {
+        val client = OkHttpClient.Builder()
+            .connectTimeout(60, TimeUnit.SECONDS)
+            .readTimeout(60, TimeUnit.SECONDS)
+            .writeTimeout(60, TimeUnit.SECONDS)
+            .build()
+
         return Retrofit.Builder()
             .baseUrl(baseUrl)
+            .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
     }
@@ -33,7 +42,6 @@ object RetrofitInstance {
             val instance = retrofit ?: synchronized(this) {
                 retrofit ?: createRetrofit(currentBaseUrl()).also { retrofit = it }
             }
-
             return instance.create(VinilosApiService::class.java)
         }
 

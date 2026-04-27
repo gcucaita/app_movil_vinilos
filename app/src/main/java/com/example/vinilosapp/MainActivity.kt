@@ -3,8 +3,11 @@ package com.example.vinilosapp
 import android.animation.ObjectAnimator
 import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.view.animation.LinearInterpolator
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -16,11 +19,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.presentation.uistate.AlbumListUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumListViewModel
 import com.example.vinilosapp.ui.albums.detail.AlbumDetailActivity
 import com.example.vinilosapp.ui.albums.list.AlbumListAdapter
-import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.data.cache.CacheManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -28,10 +32,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var albumListAdapter: AlbumListAdapter
     private lateinit var refreshButton: ImageView
     private var refreshRotationAnimator: ObjectAnimator? = null
-
     private lateinit var chipsContainer: LinearLayout
-
     private var allAlbums: List<Album> = emptyList()
+    private var selectedGenre: String = ALL_GENRES
+    private var searchQuery: String = ""
 
     companion object {
         const val ALL_GENRES = "Todos"
@@ -51,13 +55,14 @@ class MainActivity : AppCompatActivity() {
         val albumsRecyclerView = findViewById<RecyclerView>(R.id.albumsRecyclerView)
         val loadingIndicator = findViewById<View>(R.id.loadingIndicator)
         val errorText = findViewById<TextView>(R.id.errorText)
-        refreshButton = findViewById(R.id.refreshButton)
+        val searchInput = findViewById<EditText>(R.id.searchInput)
         chipsContainer = findViewById(R.id.chipsContainer)
 
         // Toolbar
         val toolbar = findViewById<View>(R.id.toolbar)
         val btnNavIcon = toolbar.findViewById<ImageView>(R.id.btnNavIcon)
         btnNavIcon.setImageResource(R.drawable.menu)
+        refreshButton = toolbar.findViewById(R.id.refreshButton)
 
         albumListAdapter = AlbumListAdapter { album ->
             val intent = Intent(this, AlbumDetailActivity::class.java)
@@ -80,19 +85,14 @@ class MainActivity : AppCompatActivity() {
                     errorText.visibility = View.GONE
                     startRefreshLoadingAnimation()
                 }
-
                 is AlbumListUiState.Success -> {
+                    allAlbums = state.albums
                     loadingIndicator.visibility = View.GONE
                     errorText.visibility = View.GONE
-
-                    allAlbums = state.albums
-
                     setupChips(allAlbums)
-                    albumListAdapter.submitList(allAlbums)
-
+                    applyFilters()
                     stopRefreshLoadingAnimation()
                 }
-
                 is AlbumListUiState.Error -> {
                     loadingIndicator.visibility = View.GONE
                     errorText.visibility = View.VISIBLE
@@ -101,37 +101,64 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
         refreshButton.setOnClickListener {
-            animateRefreshTap()
+            CacheManager.invalidateAlbumsListCache()
             albumListViewModel.loadAlbums()
         }
+
+        // Search
+        searchInput.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+            override fun afterTextChanged(s: Editable?) {
+                searchQuery = s.toString()
+                applyFilters()
+            }
+        })
 
         albumListViewModel.loadAlbums()
     }
 
-    // -------------------------------
-    // CHIPS DINÁMICOS
-    // -------------------------------
+
+    private fun applyFilters() {
+        var filtered = allAlbums
+
+        // Filtrar por género
+        if (selectedGenre != ALL_GENRES) {
+            filtered = filtered.filter { it.genre == selectedGenre }
+        }
+
+        // Filtrar por búsqueda
+        if (searchQuery.isNotEmpty()) {
+            filtered = filtered.filter { album ->
+                album.name.contains(searchQuery, ignoreCase = true) ||
+                        album.performers?.any { it.name.contains(searchQuery, ignoreCase = true) } == true
+            }
+        }
+
+        albumListAdapter.submitList(filtered)
+    }
+
+
     private fun setupChips(albums: List<Album>) {
         chipsContainer.removeAllViews()
 
         val genres = listOf(ALL_GENRES) +
                 albums.mapNotNull { it.genre }.distinct()
 
-        genres.forEachIndexed { index, genre ->
+        genres.forEachIndexed { _, genre ->
             val chip = TextView(this).apply {
                 text = genre.uppercase()
                 setPadding(36, 18, 36, 18)
                 textSize = 13f
 
                 setBackgroundResource(
-                    if (index == 0) R.drawable.bg_chip_selected
+                    if (genre == selectedGenre) R.drawable.bg_chip_selected
                     else R.drawable.bg_chip_unselected
                 )
 
                 setTextColor(
-                    if (index == 0) getColor(R.color.green_accent)
+                    if (genre == selectedGenre) getColor(R.color.green_accent)
                     else getColor(R.color.chip_text)
                 )
 
@@ -152,6 +179,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun onChipSelected(selectedChip: TextView, genre: String) {
+        selectedGenre = genre
+
         for (i in 0 until chipsContainer.childCount) {
             val chip = chipsContainer.getChildAt(i) as TextView
             chip.setBackgroundResource(R.drawable.bg_chip_unselected)
@@ -161,17 +190,7 @@ class MainActivity : AppCompatActivity() {
         selectedChip.setBackgroundResource(R.drawable.bg_chip_selected)
         selectedChip.setTextColor(getColor(R.color.green_accent))
 
-        filterAlbums(genre)
-    }
-
-    private fun filterAlbums(genre: String) {
-        val filtered = if (genre == ALL_GENRES) {
-            allAlbums
-        } else {
-            allAlbums.filter { it.genre == genre }
-        }
-
-        albumListAdapter.submitList(filtered)
+        applyFilters()
     }
 
     // -------------------------------
@@ -194,7 +213,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun startRefreshLoadingAnimation() {
         if (refreshRotationAnimator?.isRunning == true) return
-
         refreshRotationAnimator = ObjectAnimator.ofFloat(
             refreshButton,
             View.ROTATION,

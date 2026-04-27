@@ -6,6 +6,7 @@ import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.data.serviceadapter.AlbumServiceAdapter
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.helpers.EspressoIdlingResource
+import kotlinx.coroutines.delay
 
 class AlbumRepository(
     private val albumServiceAdapter: AlbumServiceAdapter = AlbumServiceAdapter()
@@ -21,24 +22,32 @@ class AlbumRepository(
         logDebug("Fetching albums data from API")
         incrementIdlingResource()
 
-        return try {
-            val response = albumServiceAdapter.getAlbums()
-            if (response.isSuccessful) {
-                val albums = response.body()
-                logDebug("Data received: $albums")
-                albums?.let { CacheManager.putAlbumsList(it) }
-                albums
-            } else {
-                logError("API Error Response: ${response.errorBody()?.string()}")
-                null
+        var lastError: Exception? = null
+
+        repeat(3) { attempt ->
+            try {
+                val response = albumServiceAdapter.getAlbums()
+                if (response.isSuccessful) {
+                    val albums = response.body()
+                    logDebug("Data received: $albums")
+                    albums?.let { CacheManager.putAlbumsList(it) }
+                    decrementIdlingResource()
+                    return albums
+                } else {
+                    logError("API Error Response: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                lastError = e
+                logError("Attempt ${attempt + 1} failed: ${e.message}", e)
+                if (attempt < 2) delay(2000)
             }
-        } catch (exception: Exception) {
-            logError("Network Exception: ${exception.message}", exception)
-            null
-        } finally {
-            decrementIdlingResource()
         }
+
+        decrementIdlingResource()
+        logError("All attempts failed: ${lastError?.message}", lastError)
+        return null
     }
+
     suspend fun getAlbum(id: Int): Album? {
         incrementIdlingResource()
         return try {
@@ -51,8 +60,8 @@ class AlbumRepository(
                 logError("API Error Response: ${response.errorBody()?.string()}")
                 null
             }
-        } catch (exception: Exception) {
-            logError("Network Exception: ${exception.message}", exception)
+        } catch (e: Exception) {
+            logError("Network Exception: ${e.message}", e)
             null
         } finally {
             decrementIdlingResource()
