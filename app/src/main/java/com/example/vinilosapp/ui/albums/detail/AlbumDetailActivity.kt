@@ -2,6 +2,7 @@ package com.example.vinilosapp.ui.albums.detail
 
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -30,6 +31,12 @@ class AlbumDetailActivity : AppCompatActivity() {
             return
         }
 
+        val btnNavIcon = binding.toolbar.root.findViewById<ImageView>(R.id.btnNavIcon)
+        val refreshBtn = binding.toolbar.root.findViewById<ImageView>(R.id.refreshButton)
+        btnNavIcon.setImageResource(R.drawable.outline_arrow_back_24)
+        btnNavIcon.setOnClickListener { finish() }
+        refreshBtn.visibility = View.GONE
+
         setupRecyclerView()
         viewModel.loadAlbum(albumId)
         observeViewModel()
@@ -48,9 +55,13 @@ class AlbumDetailActivity : AppCompatActivity() {
         viewModel.uiState.observe(this) { state ->
             when (state) {
                 is AlbumDetailUiState.Loading -> {
-                    // puedes mostrar un spinner aquí si lo agregas al layout
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.scrollView.visibility = View.GONE
                 }
                 is AlbumDetailUiState.Success -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.scrollView.visibility = View.VISIBLE
+
                     val album = state.album
                     binding.tvName.text = album.name
                     binding.tvDescription.text = formatAlbumDetailDescription(album.description, "Sin descripción")
@@ -72,6 +83,8 @@ class AlbumDetailActivity : AppCompatActivity() {
                     }
                 }
                 is AlbumDetailUiState.Error -> {
+                    binding.progressBar.visibility = View.GONE
+                    binding.scrollView.visibility = View.VISIBLE
                     Toast.makeText(this, state.message, Toast.LENGTH_SHORT).show()
                 }
             }
