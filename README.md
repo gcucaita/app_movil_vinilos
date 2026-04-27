@@ -21,7 +21,7 @@ La forma recomendada de probar la aplicación es descargando el APK publicado en
 3. En la sección **Assets** del release, descargar el archivo:
 
    ```
-   app-release.apk
+   app-debug.apk
    ```
 
    > Si se descarga desde el celular, el archivo quedará en la carpeta **Descargas / Downloads**.
@@ -37,7 +37,7 @@ Como el APK no proviene de Google Play, Android pedirá permiso explícito para 
 ### 3. Instalar el APK
 
 1. Abrir el gestor de archivos del celular y entrar a la carpeta **Descargas**.
-2. Tocar el archivo `app-release.apk`.
+2. Tocar el archivo `app-debug.apk`.
 3. Confirmar la instalación tocando **Instalar**.
 4. Una vez finalizada, tocar **Abrir** o buscar el ícono **Vinilos App** en el cajón de aplicaciones.
 
