@@ -11,5 +11,8 @@
     </style>
 
     <style name="Theme.VinilosApp" parent="Base.Theme.VinilosApp" />
-
+    <style name="RoundedImage">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">10dp</item>
+    </style>
 </resources>
