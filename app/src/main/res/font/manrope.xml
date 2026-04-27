@@ -4,11 +4,11 @@
     <font
         android:fontStyle="normal"
         android:fontWeight="400"
-        android:font="@font/noto_serif_regular" />
+        android:font="@font/manrope_regular" />
 
     <font
         android:fontStyle="normal"
         android:fontWeight="700"
-        android:font="@font/noto_serif_bold" />
+        android:font="@font/manrope_bold" />
 
 </font-family>

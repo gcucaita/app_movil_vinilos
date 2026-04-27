@@ -52,4 +52,13 @@
     <string name="nav_artists">Artists</string>
     <string name="nav_collectors">Collectors</string>
     <string name="nav_collections">Collections</string>
+    <string name="album_cover_description">Portada del álbum</string>
+
+    <string name="premium_archive_entry">PREMIUM ARCHIVE ENTRY</string>
+
+    <string name="separator_dot"> • </string>
+
+    <string name="add_to_collection">+ AÑADIR A LA COLECCIÓN</string>
+
+    <string name="tracklist_title">Tracklist</string>
 </resources>
