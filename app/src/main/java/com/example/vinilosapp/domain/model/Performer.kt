@@ -7,5 +7,6 @@ data class Performer(
     @SerializedName("name") val name: String,
     @SerializedName("image") val image: String?,
     @SerializedName("description") val description: String?,
-    @SerializedName("birthDate") val birthDate: String?
+    @SerializedName("birthDate") val birthDate: String?,
+    @SerializedName("creationDate") val creationDate: String? = null,
 )

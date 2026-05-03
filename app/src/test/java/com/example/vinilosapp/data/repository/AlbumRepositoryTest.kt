@@ -3,6 +3,7 @@ package com.example.vinilosapp.data.repository
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.domain.model.Collector
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -163,5 +164,7 @@ private fun errorBody(): ResponseBody =
             lastRequestedAlbumId = id
             return onGetAlbum(id)
         }
+
+        override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
     }
 }
