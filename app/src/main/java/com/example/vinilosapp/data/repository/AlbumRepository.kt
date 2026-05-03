@@ -6,17 +6,21 @@ import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.data.serviceadapter.AlbumServiceAdapter
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.helpers.EspressoIdlingResource
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 
 class AlbumRepository(
-    private val albumServiceAdapter: AlbumServiceAdapter = AlbumServiceAdapter()
+    private val albumServiceAdapter: AlbumServiceAdapter = AlbumServiceAdapter(),
+    private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
 ) {
     constructor(apiService: VinilosApiService) : this(AlbumServiceAdapter(apiService))
 
-    suspend fun getAllAlbums(): List<Album>? {
+    suspend fun getAllAlbums(): List<Album>? = withContext(ioDispatcher) {
         CacheManager.getAlbumsList()?.let { cachedAlbums ->
             logDebug("Using cached albums data")
-            return cachedAlbums
+            return@withContext cachedAlbums
         }
 
         logDebug("Fetching albums data from API")
@@ -24,33 +28,35 @@ class AlbumRepository(
 
         var lastError: Exception? = null
 
-        repeat(3) { attempt ->
-            try {
-                val response = albumServiceAdapter.getAlbums()
-                if (response.isSuccessful) {
-                    val albums = response.body()
-                    logDebug("Data received: $albums")
-                    albums?.let { CacheManager.putAlbumsList(it) }
-                    decrementIdlingResource()
-                    return albums
-                } else {
-                    logError("API Error Response: ${response.errorBody()?.string()}")
+        try {
+            repeat(3) { attempt ->
+                try {
+                    val response = albumServiceAdapter.getAlbums()
+                    if (response.isSuccessful) {
+                        val albums = response.body()
+                        logDebug("Data received: $albums")
+                        albums?.let { CacheManager.putAlbumsList(it) }
+                        return@withContext albums
+                    } else {
+                        logError("API Error Response: ${response.errorBody()?.string()}")
+                    }
+                } catch (e: Exception) {
+                    lastError = e
+                    logError("Attempt ${attempt + 1} failed: ${e.message}", e)
+                    if (attempt < 2) delay(2000)
                 }
-            } catch (e: Exception) {
-                lastError = e
-                logError("Attempt ${attempt + 1} failed: ${e.message}", e)
-                if (attempt < 2) delay(2000)
             }
+        } finally {
+            decrementIdlingResource()
         }
 
-        decrementIdlingResource()
         logError("All attempts failed: ${lastError?.message}", lastError)
-        return null
+        null
     }
 
-    suspend fun getAlbum(id: Int): Album? {
+    suspend fun getAlbum(id: Int): Album? = withContext(ioDispatcher) {
         incrementIdlingResource()
-        return try {
+        try {
             val response = albumServiceAdapter.getAlbum(id)
             if (response.isSuccessful) {
                 val album = response.body()
