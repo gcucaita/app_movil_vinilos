@@ -1,6 +1,8 @@
 package com.example.vinilosapp.data.cache
 
 import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.domain.model.Collector
+import com.example.vinilosapp.domain.model.CollectorAlbum
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -57,12 +59,37 @@ class CacheManagerTest {
     }
 
     @Test
+    fun `getCollectorsList devuelve null cuando no hay datos en cache`() {
+        assertNull(CacheManager.getCollectorsList())
+    }
+
+    @Test
+    fun `putCollectorsList y getCollectorsList devuelven la lista almacenada`() {
+        val collectors = listOf(collectorFixture())
+
+        CacheManager.putCollectorsList(collectors)
+
+        assertEquals(collectors, CacheManager.getCollectorsList())
+    }
+
+    @Test
+    fun `invalidateCollectorsListCache borra los datos almacenados`() {
+        CacheManager.putCollectorsList(listOf(collectorFixture()))
+
+        CacheManager.invalidateCollectorsListCache()
+
+        assertNull(CacheManager.getCollectorsList())
+    }
+
+    @Test
     fun `clearAllCaches elimina todas las entradas`() {
         CacheManager.putAlbumsList(listOf(albumFixture()))
+        CacheManager.putCollectorsList(listOf(collectorFixture()))
 
         CacheManager.clearAllCaches()
 
         assertNull(CacheManager.getAlbumsList())
+        assertNull(CacheManager.getCollectorsList())
     }
 
     private fun albumFixture(): Album = Album(
@@ -76,5 +103,21 @@ class CacheManagerTest {
         description = null,
         genre = "Salsa",
         recordLabel = "Elektra",
+    )
+
+    private fun collectorFixture(): Collector = Collector(
+        id = 100,
+        name = "Manolo Bellon",
+        telephone = "3502457896",
+        email = "manollo@caracol.com.co",
+        comments = emptyList(),
+        favoritePerformers = emptyList(),
+        collectorAlbums = listOf(
+            CollectorAlbum(
+                id = 100,
+                price = 35,
+                status = "Active",
+            )
+        ),
     )
 }
