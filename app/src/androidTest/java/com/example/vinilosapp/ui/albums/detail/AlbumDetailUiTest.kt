@@ -19,6 +19,7 @@ import com.example.vinilosapp.data.network.RetrofitInstance
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.AlbumComment
+import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
 import com.example.vinilosapp.domain.model.Track
 import com.example.vinilosapp.helpers.EspressoIdlingResource
@@ -106,6 +107,10 @@ class AlbumDetailUiTest {
             }
             return Response.success(album)
         }
+
+        override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
+
+        override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
     }
 
     companion object {

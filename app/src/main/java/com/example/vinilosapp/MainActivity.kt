@@ -19,12 +19,12 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.presentation.uistate.AlbumListUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumListViewModel
 import com.example.vinilosapp.ui.albums.detail.AlbumDetailActivity
 import com.example.vinilosapp.ui.albums.list.AlbumListAdapter
-import com.example.vinilosapp.data.cache.CacheManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -101,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         refreshButton.setOnClickListener {
             CacheManager.invalidateAlbumsListCache()
             albumListViewModel.loadAlbums()
