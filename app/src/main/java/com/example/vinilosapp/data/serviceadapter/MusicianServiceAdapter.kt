@@ -9,4 +9,5 @@ class MusicianServiceAdapter(
     private val apiService: VinilosApiService = RetrofitInstance.api
 ) {
     suspend fun getMusicians(): Response<List<Performer>> = apiService.getMusicians()
+    suspend fun getMusician(id: Int): Response<Performer> = apiService.getMusician(id)
 }
