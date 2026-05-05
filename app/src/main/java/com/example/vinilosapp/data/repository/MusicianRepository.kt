@@ -48,6 +48,26 @@ class MusicianRepository(
         return null
     }
 
+    suspend fun getMusician(id: Int): Performer? {
+        incrementIdlingResource()
+        return try {
+            val response = musicianServiceAdapter.getMusician(id)
+            if (response.isSuccessful) {
+                val musician = response.body()
+                logDebug("Musician received: $musician")
+                musician
+            } else {
+                logError("API Error Response: ${response.errorBody()?.string()}")
+                null
+            }
+        } catch (e: Exception) {
+            logError("Network Exception: ${e.message}", e)
+            null
+        } finally {
+            decrementIdlingResource()
+        }
+    }
+
     private fun incrementIdlingResource() {
         runCatching { EspressoIdlingResource.increment() }
     }
