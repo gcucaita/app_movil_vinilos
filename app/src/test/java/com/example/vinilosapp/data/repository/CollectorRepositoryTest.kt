@@ -143,5 +143,7 @@ class CollectorRepositoryTest {
             getCollectorsCalls++
             return onGetCollectors()
         }
+
+        override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
     }
 }

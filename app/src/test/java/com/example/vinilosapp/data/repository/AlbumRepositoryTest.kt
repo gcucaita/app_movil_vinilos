@@ -4,6 +4,7 @@ import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
+import com.example.vinilosapp.domain.model.Performer
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -166,5 +167,7 @@ private fun errorBody(): ResponseBody =
         }
 
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
+
+        override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
     }
 }
