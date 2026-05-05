@@ -2,6 +2,7 @@ package com.example.vinilosapp.data.network
 
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
+import com.example.vinilosapp.domain.model.Performer
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -15,4 +16,7 @@ interface VinilosApiService {
 
     @GET("collectors")
     suspend fun getCollectors(): Response<List<Collector>>
+
+    @GET("musicians")
+    suspend fun getMusicians(): Response<List<Performer>>
 }

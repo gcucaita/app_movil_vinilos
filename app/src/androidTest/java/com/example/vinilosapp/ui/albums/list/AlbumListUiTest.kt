@@ -175,6 +175,8 @@ class AlbumListUiTest {
         }
 
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
+
+        override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
     }
 
     companion object {

@@ -3,6 +3,7 @@ package com.example.vinilosapp.data.serviceadapter
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
+import com.example.vinilosapp.domain.model.Performer
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -74,5 +75,7 @@ class AlbumServiceAdapterTest {
         }
 
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
+
+        override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
     }
 }
