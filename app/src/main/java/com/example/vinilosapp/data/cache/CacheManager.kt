@@ -1,6 +1,6 @@
 package com.example.vinilosapp.data.cache
 
-import android.util.LruCache
+import androidx.collection.LruCache
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer

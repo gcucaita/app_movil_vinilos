@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    jacoco
 }
 
 android {
@@ -20,6 +21,8 @@ android {
     buildTypes {
         getByName("debug") {
             buildConfigField("String", "BASE_URL", "\"https://backvynils-rols.onrender.com/\"")
+            enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
 
         getByName("release") {
@@ -44,6 +47,10 @@ android {
     }
 }
 
+jacoco {
+    toolVersion = "0.8.11"
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -61,6 +68,8 @@ dependencies {
     implementation(libs.glide)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.junit)
@@ -69,4 +78,45 @@ dependencies {
     androidTestImplementation(libs.mockwebserver)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity.ktx)
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+    group = "verification"
+    description = "Genera el reporte de cobertura JaCoCo para los tests unitarios debug"
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val excludes = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/databinding/**",
+        "**/androidx/**"
+    )
+
+    val buildDir = layout.buildDirectory
+
+    classDirectories.setFrom(
+        fileTree(buildDir.dir("tmp/kotlin-classes/debug")) { exclude(excludes) },
+        fileTree(buildDir.dir("intermediates/javac/debug/classes")) { exclude(excludes) }
+    )
+
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+
+    executionData.setFrom(
+        fileTree(buildDir) {
+            include(
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/code_coverage/debugAndroidTest/connected/**/*.ec"
+            )
+        }
+    )
 }

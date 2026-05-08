@@ -93,6 +93,8 @@ class AlbumListUiTest {
                 albumResponses = ArrayDeque(
                     listOf<() -> Response<List<Album>>>(
                         { throw IOException("Simulated network failure") },
+                        { throw IOException("Simulated network failure") },
+                        { throw IOException("Simulated network failure") },
                         { Response.success(sampleAlbums()) },
                     )
                 ),
@@ -177,6 +179,8 @@ class AlbumListUiTest {
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
 
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
+
+        override suspend fun getMusician(id: Int): Response<Performer> = error("no aplica")
     }
 
     companion object {

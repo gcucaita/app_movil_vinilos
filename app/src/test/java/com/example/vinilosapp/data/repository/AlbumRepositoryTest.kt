@@ -14,16 +14,8 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
 
-/**
- * Pruebas unitarias del repo de álbumes — HU1 Consultar catálogo.
- *
- * Cubre success, error , exception y cache hit
- */
-@RunWith(RobolectricTestRunner::class)
 class AlbumRepositoryTest {
 
     @Before
@@ -169,5 +161,7 @@ private fun errorBody(): ResponseBody =
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
 
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
+
+        override suspend fun getMusician(id: Int): Response<Performer> = error("getMusician no aplica")
     }
 }
