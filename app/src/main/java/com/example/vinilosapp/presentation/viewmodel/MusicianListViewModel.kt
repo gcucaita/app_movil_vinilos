@@ -8,9 +8,9 @@ import com.example.vinilosapp.data.repository.MusicianRepository
 import com.example.vinilosapp.presentation.uistate.MusicianListUiState
 import kotlinx.coroutines.launch
 
-class MusicianListViewModel : ViewModel() {
-
+class MusicianListViewModel(
     private val musicianRepository: MusicianRepository = MusicianRepository()
+) : ViewModel() {
 
     private val _uiState = MutableLiveData<MusicianListUiState>(MusicianListUiState.Loading)
     val uiState: LiveData<MusicianListUiState> = _uiState

@@ -22,6 +22,7 @@ android {
         getByName("debug") {
             buildConfigField("String", "BASE_URL", "\"https://backvynils-rols.onrender.com/\"")
             enableUnitTestCoverage = true
+            enableAndroidTestCoverage = true
         }
 
         getByName("release") {
@@ -67,6 +68,8 @@ dependencies {
     implementation(libs.glide)
     testImplementation(libs.junit)
     testImplementation(libs.robolectric)
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.arch.core.testing)
     androidTestImplementation(libs.androidx.test.core)
     androidTestImplementation(libs.androidx.test.rules)
     androidTestImplementation(libs.androidx.junit)
@@ -111,7 +114,8 @@ tasks.register<JacocoReport>("jacocoTestReport") {
         fileTree(buildDir) {
             include(
                 "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
-                "jacoco/testDebugUnitTest.exec"
+                "jacoco/testDebugUnitTest.exec",
+                "outputs/code_coverage/debugAndroidTest/connected/**/*.ec"
             )
         }
     )

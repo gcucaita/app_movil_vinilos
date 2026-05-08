@@ -8,9 +8,9 @@ import com.example.vinilosapp.data.repository.CollectorRepository
 import com.example.vinilosapp.presentation.uistate.CollectorListUiState
 import kotlinx.coroutines.launch
 
-class CollectorListViewModel : ViewModel() {
-
+class CollectorListViewModel(
     private val collectorRepository: CollectorRepository = CollectorRepository()
+) : ViewModel() {
 
     private val _uiState = MutableLiveData<CollectorListUiState>(CollectorListUiState.Loading)
     val uiState: LiveData<CollectorListUiState> = _uiState
