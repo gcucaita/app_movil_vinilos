@@ -15,11 +15,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
 
-@RunWith(RobolectricTestRunner::class)
 class CollectorRepositoryTest {
 
     @Before

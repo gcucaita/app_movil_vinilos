@@ -14,16 +14,8 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
 
-/**
- * Pruebas unitarias del repo de álbumes — HU1 Consultar catálogo.
- *
- * Cubre success, error , exception y cache hit
- */
-@RunWith(RobolectricTestRunner::class)
 class AlbumRepositoryTest {
 
     @Before

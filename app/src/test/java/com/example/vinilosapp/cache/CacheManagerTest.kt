@@ -9,21 +9,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-
-/**
- * Pruebas unitarias del [CacheManager] — HU1 Consultar catálogo.
- *
- * Verifica:
- *  - getAlbumsList sin datos previos.
- *  - putAlbumsList + getAlbumsList recuperando lista almacenada.
- *  - invalidateAlbumsListCache borrando solo la lista de álbumes.
- *  - clearAllCaches dejando cache vacío.
- *
- * Necesita Robolectric porque android.util.LruCache es de Android.
- */
-@RunWith(RobolectricTestRunner::class)
 class CacheManagerTest {
 
     @Before
