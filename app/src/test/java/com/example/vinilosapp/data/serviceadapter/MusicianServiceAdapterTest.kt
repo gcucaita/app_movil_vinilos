@@ -50,5 +50,7 @@ class MusicianServiceAdapterTest {
             getMusiciansCalls++
             return onGetMusicians()
         }
+        
+        override suspend fun getMusician(id: Int): Response<Performer> = error("getMusician no aplica")
     }
 }

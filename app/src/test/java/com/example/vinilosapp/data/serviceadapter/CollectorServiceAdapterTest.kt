@@ -67,5 +67,7 @@ class CollectorServiceAdapterTest {
         }
 
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
+
+        override suspend fun getMusician(id: Int): Response<Performer> = error("getMusician no aplica")
     }
 }

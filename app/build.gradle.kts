@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    jacoco
 }
 
 android {
@@ -20,6 +21,7 @@ android {
     buildTypes {
         getByName("debug") {
             buildConfigField("String", "BASE_URL", "\"https://backvynils-rols.onrender.com/\"")
+            enableUnitTestCoverage = true
         }
 
         getByName("release") {
@@ -42,6 +44,10 @@ android {
     kotlinOptions {
         jvmTarget = "11"
     }
+}
+
+jacoco {
+    toolVersion = "0.8.11"
 }
 
 dependencies {
@@ -69,4 +75,44 @@ dependencies {
     androidTestImplementation(libs.mockwebserver)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.androidx.activity.ktx)
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+    group = "verification"
+    description = "Genera el reporte de cobertura JaCoCo para los tests unitarios debug"
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    val excludes = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*",
+        "**/databinding/**",
+        "**/androidx/**"
+    )
+
+    val buildDir = layout.buildDirectory
+
+    classDirectories.setFrom(
+        fileTree(buildDir.dir("tmp/kotlin-classes/debug")) { exclude(excludes) },
+        fileTree(buildDir.dir("intermediates/javac/debug/classes")) { exclude(excludes) }
+    )
+
+    sourceDirectories.setFrom(files("src/main/java", "src/main/kotlin"))
+
+    executionData.setFrom(
+        fileTree(buildDir) {
+            include(
+                "outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+                "jacoco/testDebugUnitTest.exec"
+            )
+        }
+    )
 }
