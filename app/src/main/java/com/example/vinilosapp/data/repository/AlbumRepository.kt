@@ -74,6 +74,10 @@ class AlbumRepository(
         }
     }
 
+    fun invalidateAlbumsCache() {
+        CacheManager.invalidateAlbumsListCache()
+    }
+
     private fun incrementIdlingResource() {
         runCatching { EspressoIdlingResource.increment() }
     }

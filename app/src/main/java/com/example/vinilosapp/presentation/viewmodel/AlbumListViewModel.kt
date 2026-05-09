@@ -27,4 +27,9 @@ class AlbumListViewModel(
             }
         }
     }
+
+    fun refreshAlbums() {
+        albumRepository.invalidateAlbumsCache()
+        loadAlbums()
+    }
 }

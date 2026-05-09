@@ -19,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.presentation.uistate.AlbumListUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumListViewModel
@@ -113,9 +112,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         refreshButton.setOnClickListener {
-            CacheManager.invalidateAlbumsListCache()
             animateRefreshTap()
-            albumListViewModel.loadAlbums()
+            albumListViewModel.refreshAlbums()
         }
 
         searchInput.addTextChangedListener(object : TextWatcher {
