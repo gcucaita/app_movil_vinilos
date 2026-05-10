@@ -21,7 +21,7 @@ La forma recomendada de probar la aplicación es descargando el APK publicado en
 3. En la sección **Assets** del release, descargar el archivo:
 
    ```
-   vinilos-app-v.1.0.0.apk
+   vinilos-app-v.2.0.0.apk
 
    ```
 
@@ -94,24 +94,188 @@ Si se desea regenerar el APK localmente en lugar de usar el del release:
 
    APK generado en `app/build/outputs/apk/debug/app-debug.apk`.
 
-<!-- ### Publicar un nuevo Release en GitHub
+---
 
-1. Crear y subir un tag con la versión:
+# Guía de Pruebas y Cobertura
 
-   ```bash
-   git tag v1.0.0
-   git push origin v1.0.0
-   ```
-
-2. En GitHub, ir a **Releases → Draft a new release**, seleccionar el tag y adjuntar el archivo `app-release.apk` generado en el paso anterior.
-3. Publicar el release. A partir de ese momento, cualquier persona podrá descargar el APK siguiendo los pasos de la sección anterior. -->
+Documentación completa para ejecutar las pruebas unitarias, tests de instrumentación (Espresso) y generar reportes de cobertura con JaCoCo en **Windows**.
 
 ---
 
-## ✅ Pruebas
+## Requisitos previos
 
-Para compilar y ejecutar todas las pruebas unitarias:
+- **Android Studio** (Giraffe / Hedgehog o superior)
+- **JDK 11** instalado
+- **Android SDK 34**
+- **Emulador Android con API 34** (para Espresso tests)
+  - Los tests requieren API 34 por compatibilidad con `androidx.collection.LruCache`
 
-```bash
-./gradlew test
+---
+
+## 1️. Ejecutar pruebas unitarias
+
+Las pruebas unitarias se ejecutan sin emulador:
+
+```powershell
+.\gradlew.bat testDebugUnitTest
 ```
+
+Esto ejecuta todos los tests unitarios de:
+- **ViewModels**: AlbumListViewModel, AlbumDetailViewModel, MusicianListViewModel, MusicianDetailViewModel, CollectorListViewModel
+- **Repositories**: AlbumRepository, MusicianRepository, CollectorRepository
+- **ServiceAdapters**: AlbumServiceAdapter, MusicianServiceAdapter, CollectorServiceAdapter
+
+---
+
+## 2️. Ejecutar pruebas de instrumentación (Espresso)
+
+Requiere un emulador ejecutándose con **API 34** por lo que es necesario verificar que tu emulador esté corriendo antes de ejecutar el siguiente comando:
+
+```powershell
+.\gradlew.bat connectedDebugAndroidTest
+```
+
+Esto ejecuta todos los tests de UI usando Espresso:
+- **AlbumListUiTest**: Lista de álbumes, refresh, navegación
+- **AlbumDetailUiTest**: Detalles del álbum, comentarios
+- **MusicianListUiTest**: Lista de artistas, búsqueda
+- **MusicianDetailUiTest**: Detalles del artista
+- **CollectorListUiTest**: Lista de coleccionistas, búsqueda
+
+---
+
+## 3️. Generar reporte de cobertura con JaCoCo
+
+Para generar el reporte combinado de cobertura (unit + Espresso):
+
+```powershell
+.\gradlew.bat jacocoTestReport
+```
+
+**Importante**: Este comando ejecuta automáticamente `testDebugUnitTest` y espera que `connectedDebugAndroidTest` haya sido ejecutado previamente. Si no se han ejecutado las pruebas de Espresso, solo se mostrará la cobertura de pruebas unitarias.
+
+---
+
+## 4️. Ver el reporte de cobertura
+
+Una vez generado el reporte, abrir el archivo HTML en tu navegador:
+
+```powershell
+start app/build/reports/jacoco/jacocoTestReport/html/index.html
+```
+
+El reporte muestra:
+- **Overall Coverage**: Cobertura total del código (~83%)
+- **Detalles por paquete**: `data.cache`, `data.network`, `data.repository`, `data.serviceadapter`, `domain.model`, `presentation.uistate`, `ui.*`
+- **Instrucciones cubiertas**: Número de líneas ejecutadas vs. totales
+
+---
+
+##  Flujo completo (recomendado)
+
+Para una ejecución completa desde cero:
+
+```powershell
+# 1. Abrir PowerShell en la raíz del proyecto
+
+# 2. Limpiar builds previos
+.\gradlew.bat clean
+
+# 3. Ejecutar pruebas unitarias
+.\gradlew.bat testDebugUnitTest
+
+# 4. Ejecuta pruebas de instrumentación
+# Asegurarse de tener emulador API 34 corriendo
+.\gradlew.bat connectedDebugAndroidTest
+
+# 5. Generar reporte de cobertura
+.\gradlew.bat jacocoTestReport
+
+# 6. Abrir reporte en navegador
+start app/build/reports/jacoco/jacocoTestReport/html/index.html
+```
+
+---
+
+## Estructura de archivos de pruebas
+
+```
+app/src/
+├── test/java/com/example/vinilosapp/
+│   ├── data/repository/
+│   │   ├── AlbumRepositoryTest.kt
+│   │   ├── CollectorRepositoryTest.kt
+│   │   └── MusicianRepositoryTest.kt
+│   ├── data/serviceadapter/
+│   │   ├── AlbumServiceAdapterTest.kt
+│   │   ├── CollectorServiceAdapterTest.kt
+│   │   └── MusicianServiceAdapterTest.kt
+│   └── presentation/viewmodel/
+│       ├── AlbumListViewModelTest.kt
+│       ├── AlbumDetailViewModelTest.kt
+│       ├── MusicianListViewModelTest.kt
+│       ├── MusicianDetailViewModelTest.kt
+│       └── CollectorListViewModelTest.kt
+│
+└── androidTest/java/com/example/vinilosapp/
+    └── ui/
+        ├── albums/
+        │   ├── list/AlbumListUiTest.kt
+        │   └── detail/AlbumDetailUiTest.kt
+        ├── musicians/
+        │   ├── MusicianListUiTest.kt
+        │   └── MusicianDetailUiTest.kt
+        └── collectors/
+            └── CollectorListUiTest.kt
+```
+
+---
+
+## Cobertura por módulo
+
+| Módulo | Tests Unitarios | Tests Espresso | Cobertura |
+|--------|-----------------|----------------|-----------|
+| ViewModel | ✅ | ✅ | ~90% |
+| Repository | ✅ | - | ~85% |
+| ServiceAdapter | ✅ | - | ~80% |
+| UI (Activities) | - | ✅ | ~75% |
+| Cache Manager | ✅ | - | ~95% |
+| **TOTAL** | | | **~83%** |
+
+---
+
+## Historias de usuario cubiertas
+
+- **HU03**: Listar artistas / músicos ✅
+- **HU04**: Ver detalles de artista ✅
+- **HU05**: Listar coleccionistas ✅
+
+---
+
+## Troubleshooting
+
+### ❌ El reporte dice "0% de cobertura"
+**Solución**: Asegurarse de haber ejecutado `testDebugUnitTest` y `connectedDebugAndroidTest` antes de `jacocoTestReport`.
+
+### ❌ `connectedDebugAndroidTest` falla con "Unable to find instrumentation target"
+**Solución**: Verificar que haya un emulador corriendo con API 34. Ejecutar en otra ventana de PowerShell:
+```powershell
+adb devices
+```
+
+### ❌ Los tests de Espresso timeout o fallan
+**Solución**: Probar con un emulador con más recursos (8GB RAM, 4 cores). Los tests tardan de 3-5 minutos.
+
+### ❌ `gradlew.bat` no es reconocido
+**Solución**: Asegurarse de estar en la carpeta raíz del proyecto donde está `gradlew.bat`. Si aún falla, usar:
+```powershell
+gradlew.bat testDebugUnitTest
+```
+
+### ❌ Error "gradle wrapper not found"
+**Solución**: Descargar el wrapper:
+```powershell
+gradle wrapper --gradle-version 8.3
+```
+
+---
