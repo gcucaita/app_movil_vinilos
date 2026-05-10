@@ -19,12 +19,14 @@ import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.presentation.uistate.AlbumListUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumListViewModel
 import com.example.vinilosapp.ui.albums.detail.AlbumDetailActivity
 import com.example.vinilosapp.ui.albums.list.AlbumListAdapter
-import com.example.vinilosapp.data.cache.CacheManager
+import com.example.vinilosapp.ui.musicians.MusicianListActivity
+import com.example.vinilosapp.ui.collectors.CollectorListActivity
 
 class MainActivity : AppCompatActivity() {
 
@@ -64,6 +66,14 @@ class MainActivity : AppCompatActivity() {
         btnNavIcon.setImageResource(R.drawable.menu)
         refreshButton = toolbar.findViewById(R.id.refreshButton)
 
+        // BottomNav
+        findViewById<TextView>(R.id.navArtists).setOnClickListener {
+            startActivity(Intent(this, MusicianListActivity::class.java))
+        }
+        findViewById<TextView>(R.id.navCollectors).setOnClickListener {
+            startActivity(Intent(this, CollectorListActivity::class.java))
+        }
+
         albumListAdapter = AlbumListAdapter { album ->
             val intent = Intent(this, AlbumDetailActivity::class.java)
             intent.putExtra("albumId", album.id)
@@ -101,12 +111,13 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+
         refreshButton.setOnClickListener {
             CacheManager.invalidateAlbumsListCache()
+            animateRefreshTap()
             albumListViewModel.loadAlbums()
         }
 
-        // Search
         searchInput.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
@@ -119,105 +130,72 @@ class MainActivity : AppCompatActivity() {
         albumListViewModel.loadAlbums()
     }
 
-
     private fun applyFilters() {
         var filtered = allAlbums
-
-        // Filtrar por género
         if (selectedGenre != ALL_GENRES) {
             filtered = filtered.filter { it.genre == selectedGenre }
         }
-
-        // Filtrar por búsqueda
         if (searchQuery.isNotEmpty()) {
             filtered = filtered.filter { album ->
                 album.name.contains(searchQuery, ignoreCase = true) ||
                         album.performers?.any { it.name.contains(searchQuery, ignoreCase = true) } == true
             }
         }
-
         albumListAdapter.submitList(filtered)
     }
 
-
     private fun setupChips(albums: List<Album>) {
         chipsContainer.removeAllViews()
-
-        val genres = listOf(ALL_GENRES) +
-                albums.mapNotNull { it.genre }.distinct()
-
-        genres.forEachIndexed { _, genre ->
+        val genres = listOf(ALL_GENRES) + albums.mapNotNull { it.genre }.distinct()
+        genres.forEach { genre ->
             val chip = TextView(this).apply {
                 text = genre.uppercase()
                 setPadding(36, 18, 36, 18)
                 textSize = 13f
-
                 setBackgroundResource(
                     if (genre == selectedGenre) R.drawable.bg_chip_selected
                     else R.drawable.bg_chip_unselected
                 )
-
                 setTextColor(
                     if (genre == selectedGenre) getColor(R.color.green_accent)
                     else getColor(R.color.chip_text)
                 )
-
                 val params = LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT
                 )
                 params.marginEnd = 16
                 layoutParams = params
-
-                setOnClickListener {
-                    onChipSelected(this, genre)
-                }
+                setOnClickListener { onChipSelected(this, genre) }
             }
-
             chipsContainer.addView(chip)
         }
     }
 
     private fun onChipSelected(selectedChip: TextView, genre: String) {
         selectedGenre = genre
-
         for (i in 0 until chipsContainer.childCount) {
             val chip = chipsContainer.getChildAt(i) as TextView
             chip.setBackgroundResource(R.drawable.bg_chip_unselected)
             chip.setTextColor(getColor(R.color.chip_text))
         }
-
         selectedChip.setBackgroundResource(R.drawable.bg_chip_selected)
         selectedChip.setTextColor(getColor(R.color.green_accent))
-
         applyFilters()
     }
 
-    // -------------------------------
-    // ANIMACIONES
-    // -------------------------------
     private fun animateRefreshTap() {
         refreshButton.animate()
-            .scaleX(0.85f)
-            .scaleY(0.85f)
-            .setDuration(90)
+            .scaleX(0.85f).scaleY(0.85f).setDuration(90)
             .withEndAction {
-                refreshButton.animate()
-                    .scaleX(1f)
-                    .scaleY(1f)
-                    .setDuration(120)
-                    .start()
-            }
-            .start()
+                refreshButton.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
+            }.start()
     }
 
     private fun startRefreshLoadingAnimation() {
         if (refreshRotationAnimator?.isRunning == true) return
         refreshRotationAnimator = ObjectAnimator.ofFloat(
-            refreshButton,
-            View.ROTATION,
-            0f,
-            360f
+            refreshButton, View.ROTATION, 0f, 360f
         ).apply {
             duration = 700
             repeatCount = ObjectAnimator.INFINITE
