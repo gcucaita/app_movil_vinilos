@@ -24,6 +24,9 @@
             </intent-filter>
         </activity>
         <activity android:name=".ui.albums.detail.AlbumDetailActivity"/>
+        <activity android:name=".ui.musicians.MusicianListActivity"/>
+        <activity android:name=".ui.musicians.MusicianDetailActivity"/>
+        <activity android:name=".ui.collectors.CollectorListActivity"/>
     </application>
 
 </manifest>

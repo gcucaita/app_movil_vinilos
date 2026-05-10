@@ -19,4 +19,6 @@
     <color name="chip_unselected_background">#353534</color>
     <color name="chip_selected_background">#1A53E076</color>
     <color name="chip_selected_border">#3353E076</color>
+    <color name="bg_card">#3353E076</color>
+
 </resources>

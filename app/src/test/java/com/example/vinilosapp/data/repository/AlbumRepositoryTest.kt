@@ -3,6 +3,8 @@ package com.example.vinilosapp.data.repository
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.domain.model.Collector
+import com.example.vinilosapp.domain.model.Performer
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -12,16 +14,8 @@ import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import retrofit2.Response
 
-/**
- * Pruebas unitarias del repo de álbumes — HU1 Consultar catálogo.
- *
- * Cubre success, error , exception y cache hit
- */
-@RunWith(RobolectricTestRunner::class)
 class AlbumRepositoryTest {
 
     @Before
@@ -163,5 +157,11 @@ private fun errorBody(): ResponseBody =
             lastRequestedAlbumId = id
             return onGetAlbum(id)
         }
+
+        override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
+
+        override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
+
+        override suspend fun getMusician(id: Int): Response<Performer> = error("getMusician no aplica")
     }
 }
