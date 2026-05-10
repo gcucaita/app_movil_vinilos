@@ -21,7 +21,8 @@ La forma recomendada de probar la aplicación es descargando el APK publicado en
 3. En la sección **Assets** del release, descargar el archivo:
 
    ```
-   app-debug.apk
+   vinilos-app-v.1.0.0.apk
+
    ```
 
    > Si se descarga desde el celular, el archivo quedará en la carpeta **Descargas / Downloads**.
