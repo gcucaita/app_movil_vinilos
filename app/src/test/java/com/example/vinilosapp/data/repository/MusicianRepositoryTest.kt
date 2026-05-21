@@ -114,6 +114,8 @@ class MusicianRepositoryTest {
 
         override suspend fun getCollectors(): Response<List<Collector>> = error("getCollectors no aplica")
 
+        override suspend fun getCollector(id: Int): Response<Collector> = error("getCollector no aplica")
+
         override suspend fun getMusicians(): Response<List<Performer>> {
             getMusiciansCalls++
             return onGetMusicians()

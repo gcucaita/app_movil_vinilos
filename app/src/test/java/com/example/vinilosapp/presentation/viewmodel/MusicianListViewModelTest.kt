@@ -92,6 +92,8 @@ class MusicianListViewModelTest {
         override suspend fun getAlbums(): Response<List<Album>> = Response.success(emptyList())
         override suspend fun getAlbum(id: Int): Response<Album> = error("no aplica")
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
+
+        override suspend fun getCollector(id: Int): Response<Collector> = error("getCollector no aplica")
         override suspend fun getMusicians(): Response<List<Performer>> = onGetMusicians()
         override suspend fun getMusician(id: Int): Response<Performer> = error("no aplica")
     }
