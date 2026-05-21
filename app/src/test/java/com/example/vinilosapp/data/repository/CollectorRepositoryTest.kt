@@ -90,6 +90,40 @@ class CollectorRepositoryTest {
         assertEquals(2, api.getCollectorsCalls)
     }
 
+    @Test
+    fun `getCollector devuelve collector cuando la API responde 200`() = runBlocking {
+        val expected = collectorFixture(id = 100)
+        val repository = CollectorRepository(
+            FakeVinilosApiService(onGetCollector = { Response.success(expected) }),
+        )
+
+        val result = repository.getCollector(100)
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `getCollector devuelve null cuando la API lanza excepcion`() = runBlocking {
+        val repository = CollectorRepository(
+            FakeVinilosApiService(onGetCollector = { throw RuntimeException("network") }),
+        )
+
+        val result = repository.getCollector(100)
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `getCollector devuelve null cuando la API responde con error HTTP`() = runBlocking {
+        val repository = CollectorRepository(
+            FakeVinilosApiService(onGetCollector = { Response.error(500, errorBody()) }),
+        )
+
+        val result = repository.getCollector(100)
+
+        assertNull(result)
+    }
+
     private fun collectorsFixture(): List<Collector> = listOf(collectorFixture(id = 100), collectorFixture(id = 101))
 
     private fun collectorFixture(id: Int): Collector = Collector(
@@ -127,6 +161,7 @@ class CollectorRepositoryTest {
 
     private class FakeVinilosApiService(
         private val onGetCollectors: () -> Response<List<Collector>> = { error("getCollectors no stubbeado") },
+        private val onGetCollector: () -> Response<Collector> = { error("getCollector no stubbeado") },
     ) : VinilosApiService {
 
         var getCollectorsCalls: Int = 0
@@ -140,6 +175,8 @@ class CollectorRepositoryTest {
             getCollectorsCalls++
             return onGetCollectors()
         }
+
+        override suspend fun getCollector(id: Int): Response<Collector> = onGetCollector()
 
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
 

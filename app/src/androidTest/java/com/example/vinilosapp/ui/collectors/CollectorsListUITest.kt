@@ -110,6 +110,7 @@ class CollectorListUiTest {
         override suspend fun getAlbums(): Response<List<Album>> = Response.success(emptyList())
         override suspend fun getAlbum(id: Int): Response<Album> = error("no aplica")
         override suspend fun getCollectors(): Response<List<Collector>> = onGetCollectors()
+        override suspend fun getCollector(id: Int): Response<Collector> = error("no aplica")
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
         override suspend fun getMusician(id: Int): Response<Performer> = error("no aplica")
     }

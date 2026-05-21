@@ -17,6 +17,9 @@ interface VinilosApiService {
     @GET("collectors")
     suspend fun getCollectors(): Response<List<Collector>>
 
+    @GET("collectors/{id}")
+    suspend fun getCollector(@Path("id") id: Int): Response<Collector>
+
     @GET("musicians")
     suspend fun getMusicians(): Response<List<Performer>>
 

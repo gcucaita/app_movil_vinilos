@@ -26,6 +26,19 @@ class CollectorServiceAdapterTest {
         assertEquals(1, api.getCollectorsCalls)
     }
 
+    @Test
+    fun `getCollector delega en la API y devuelve la respuesta`() = runBlocking {
+        val expected = collectorFixture(id = 100)
+        val api = FakeApi(onGetCollector = { Response.success(expected) })
+        val adapter = CollectorServiceAdapter(api)
+
+        val response = adapter.getCollector(100)
+
+        assertTrue(response.isSuccessful)
+        assertEquals(expected, response.body())
+        assertEquals(1, api.getCollectorCalls)
+    }
+
     private fun collectorFixture(id: Int): Collector = Collector(
         id = id,
         name = "Collector $id",
@@ -52,9 +65,13 @@ class CollectorServiceAdapterTest {
 
     private class FakeApi(
         private val onGetCollectors: () -> Response<List<Collector>> = { error("getCollectors no stubbeado") },
+        private val onGetCollector: () -> Response<Collector> = { error("getCollector no stubbeado") },
     ) : VinilosApiService {
 
         var getCollectorsCalls: Int = 0
+            private set
+
+        var getCollectorCalls: Int = 0
             private set
 
         override suspend fun getAlbums(): Response<List<Album>> = error("getAlbums no aplica")
@@ -64,6 +81,11 @@ class CollectorServiceAdapterTest {
         override suspend fun getCollectors(): Response<List<Collector>> {
             getCollectorsCalls++
             return onGetCollectors()
+        }
+
+        override suspend fun getCollector(id: Int): Response<Collector> {
+            getCollectorCalls++
+            return onGetCollector()
         }
 
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
