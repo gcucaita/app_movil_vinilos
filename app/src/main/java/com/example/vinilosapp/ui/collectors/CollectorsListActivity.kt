@@ -57,7 +57,9 @@ class CollectorListActivity : AppCompatActivity() {
         val searchInput = findViewById<EditText>(R.id.searchInput)
 
         adapter = CollectorListAdapter { collector ->
-            // navegar al detalle cuando esté listo
+            val intent = Intent(this, CollectorDetailActivity::class.java)
+            intent.putExtra("collectorId", collector.id)
+            startActivity(intent)
         }
 
         recyclerView.apply {

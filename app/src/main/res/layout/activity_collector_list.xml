@@ -105,64 +105,14 @@
 
     </LinearLayout>
 
-    <LinearLayout
+    <include
         android:id="@+id/bottomNav"
+        layout="@layout/view_bottom_nav"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/nav_background"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/navAlbums"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_albums"
-            android:textAllCaps="true"
-            android:textColor="@color/nav_text"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/navArtists"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_artists"
-            android:textAllCaps="true"
-            android:textColor="@color/nav_text"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/navCollectors"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_collectors"
-            android:textAllCaps="true"
-            android:textColor="@color/green_accent"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/navCollections"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_collections"
-            android:textAllCaps="true"
-            android:textColor="@color/nav_text"
-            android:textSize="12sp" />
-
-    </LinearLayout>
-
+        app:layout_constraintStart_toStartOf="parent"/>
     <ProgressBar
         android:id="@+id/loadingIndicator"
         style="?android:attr/progressBarStyle"
