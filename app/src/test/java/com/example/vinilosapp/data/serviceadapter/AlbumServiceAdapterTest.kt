@@ -1,6 +1,7 @@
 package com.example.vinilosapp.data.serviceadapter
 
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
@@ -41,6 +42,27 @@ class AlbumServiceAdapterTest {
         assertEquals(42, api.lastRequestedAlbumId)
     }
 
+    @Test
+    fun `createAlbum delega en la API y envia el payload`() = runBlocking {
+        val request = CreateAlbumRequest(
+            name = "Buscando America",
+            cover = "https://example.com/100.jpg",
+            releaseDate = "1984-08-01T05:00:00.000Z",
+            description = "Descripcion",
+            genre = "Salsa",
+            recordLabel = "Elektra",
+        )
+        val expected = albumFixture(id = 100)
+        val api = FakeApi(onCreateAlbum = { Response.success(expected) })
+        val adapter = AlbumServiceAdapter(api)
+
+        val response = adapter.createAlbum(request)
+
+        assertTrue(response.isSuccessful)
+        assertEquals(expected, response.body())
+        assertEquals(request, api.lastCreateAlbumRequest)
+    }
+
     private fun albumFixture(id: Int): Album = Album(
         id = id,
         name = "Album $id",
@@ -57,11 +79,14 @@ class AlbumServiceAdapterTest {
     private class FakeApi(
         private val onGetAlbums: () -> Response<List<Album>> = { error("getAlbums no stubbeado") },
         private val onGetAlbum: (Int) -> Response<Album> = { error("getAlbum no stubbeado") },
+        private val onCreateAlbum: (CreateAlbumRequest) -> Response<Album> = { error("createAlbum no stubbeado") },
     ) : VinilosApiService {
 
         var getAlbumsCalls: Int = 0
             private set
         var lastRequestedAlbumId: Int? = null
+            private set
+        var lastCreateAlbumRequest: CreateAlbumRequest? = null
             private set
 
         override suspend fun getAlbums(): Response<List<Album>> {
@@ -72,6 +97,11 @@ class AlbumServiceAdapterTest {
         override suspend fun getAlbum(id: Int): Response<Album> {
             lastRequestedAlbumId = id
             return onGetAlbum(id)
+        }
+
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> {
+            lastCreateAlbumRequest = request
+            return onCreateAlbum(request)
         }
 
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())

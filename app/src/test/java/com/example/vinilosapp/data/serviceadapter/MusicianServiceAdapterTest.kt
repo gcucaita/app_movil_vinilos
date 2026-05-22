@@ -1,6 +1,7 @@
 package com.example.vinilosapp.data.serviceadapter
 
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
@@ -43,6 +44,8 @@ class MusicianServiceAdapterTest {
         override suspend fun getAlbums(): Response<List<Album>> = error("getAlbums no aplica")
 
         override suspend fun getAlbum(id: Int): Response<Album> = error("getAlbum no aplica")
+
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("createAlbum no aplica")
 
         override suspend fun getCollectors(): Response<List<Collector>> = error("getCollectors no aplica")
 

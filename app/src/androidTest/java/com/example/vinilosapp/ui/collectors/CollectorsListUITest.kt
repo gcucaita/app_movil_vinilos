@@ -19,6 +19,7 @@ import com.example.vinilosapp.R
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.RetrofitInstance
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
@@ -109,6 +110,7 @@ class CollectorListUiTest {
     ) : VinilosApiService {
         override suspend fun getAlbums(): Response<List<Album>> = Response.success(emptyList())
         override suspend fun getAlbum(id: Int): Response<Album> = error("no aplica")
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("no aplica")
         override suspend fun getCollectors(): Response<List<Collector>> = onGetCollectors()
         override suspend fun getCollector(id: Int): Response<Collector> = error("no aplica")
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())

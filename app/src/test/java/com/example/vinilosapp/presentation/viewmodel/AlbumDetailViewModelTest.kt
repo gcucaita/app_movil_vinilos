@@ -2,6 +2,7 @@ package com.example.vinilosapp.presentation.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.data.repository.AlbumRepository
 import com.example.vinilosapp.data.serviceadapter.AlbumServiceAdapter
 import com.example.vinilosapp.domain.model.Album
@@ -103,6 +104,7 @@ class AlbumDetailViewModelTest {
     ) : VinilosApiService {
         override suspend fun getAlbums(): Response<List<Album>> = Response.success(emptyList())
         override suspend fun getAlbum(id: Int): Response<Album> = onGetAlbum(id)
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("no aplica")
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
 
         override suspend fun getCollector(id: Int): Response<Collector> = error("getCollector no aplica")
