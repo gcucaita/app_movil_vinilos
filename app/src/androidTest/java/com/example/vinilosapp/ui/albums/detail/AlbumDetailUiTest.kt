@@ -17,6 +17,7 @@ import com.example.vinilosapp.R
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.RetrofitInstance
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.AlbumComment
 import com.example.vinilosapp.domain.model.Collector
@@ -107,6 +108,8 @@ class AlbumDetailUiTest {
             }
             return Response.success(album)
         }
+
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("no aplica")
 
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
 

@@ -2,6 +2,7 @@ package com.example.vinilosapp.data.repository
 
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
@@ -12,6 +13,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Response
@@ -120,6 +122,42 @@ class AlbumRepositoryTest {
         assertNull(result)
     }
 
+    @Test
+    fun `createAlbum devuelve album e invalida cache cuando la API responde 200`() = runBlocking {
+        val request = createAlbumRequest()
+        val expected = albumFixture(id = 999)
+        val api = FakeVinilosApiService(onCreateAlbum = { Response.success(expected) })
+        val repository = AlbumRepository(api)
+
+        CacheManager.putAlbumsList(catalogo())
+        val result = repository.createAlbum(request)
+
+        assertTrue(result.isSuccess)
+        assertEquals(expected, result.getOrNull())
+        assertEquals(request, api.lastCreateAlbumRequest)
+        assertNull(CacheManager.getAlbumsList())
+    }
+
+    @Test
+    fun `createAlbum devuelve error cuando la API responde con error HTTP`() = runBlocking {
+        val api = FakeVinilosApiService(onCreateAlbum = { Response.error(400, errorBody()) })
+        val repository = AlbumRepository(api)
+
+        val result = repository.createAlbum(createAlbumRequest())
+
+        assertTrue(result.isFailure)
+    }
+
+    @Test
+    fun `createAlbum devuelve error cuando la API lanza excepcion`() = runBlocking {
+        val api = FakeVinilosApiService(onCreateAlbum = { throw IllegalStateException("oops") })
+        val repository = AlbumRepository(api)
+
+        val result = repository.createAlbum(createAlbumRequest())
+
+        assertTrue(result.isFailure)
+    }
+
     private fun catalogo(): List<Album> = listOf(albumFixture(id = 100), albumFixture(id = 101))
 
     private fun albumFixture(id: Int): Album = Album(
@@ -135,17 +173,29 @@ class AlbumRepositoryTest {
         recordLabel = "Elektra",
     )
 
+    private fun createAlbumRequest() = CreateAlbumRequest(
+        name = "Buscando America",
+        cover = "https://example.com/cover.jpg",
+        releaseDate = "1984-08-01T05:00:00.000Z",
+        description = "Descripcion",
+        genre = "Salsa",
+        recordLabel = "Elektra",
+    )
+
 private fun errorBody(): ResponseBody =
     ResponseBody.create(MediaType.parse("text/plain"), "server error")
     
     private class FakeVinilosApiService(
         private val onGetAlbums: () -> Response<List<Album>> = { error("getAlbums no stubbeado") },
         private val onGetAlbum: (Int) -> Response<Album> = { error("getAlbum no stubbeado") },
+        private val onCreateAlbum: (CreateAlbumRequest) -> Response<Album> = { error("createAlbum no stubbeado") },
     ) : VinilosApiService {
 
         var getAlbumsCalls: Int = 0
             private set
         var lastRequestedAlbumId: Int? = null
+            private set
+        var lastCreateAlbumRequest: CreateAlbumRequest? = null
             private set
 
         override suspend fun getAlbums(): Response<List<Album>> {
@@ -156,6 +206,11 @@ private fun errorBody(): ResponseBody =
         override suspend fun getAlbum(id: Int): Response<Album> {
             lastRequestedAlbumId = id
             return onGetAlbum(id)
+        }
+
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> {
+            lastCreateAlbumRequest = request
+            return onCreateAlbum(request)
         }
 
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())

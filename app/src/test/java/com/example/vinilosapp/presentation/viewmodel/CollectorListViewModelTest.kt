@@ -3,6 +3,7 @@ package com.example.vinilosapp.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.data.repository.CollectorRepository
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
@@ -93,6 +94,7 @@ class CollectorListViewModelTest {
     ) : VinilosApiService {
         override suspend fun getAlbums(): Response<List<Album>> = Response.success(emptyList())
         override suspend fun getAlbum(id: Int): Response<Album> = error("no aplica")
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("no aplica")
         override suspend fun getCollectors(): Response<List<Collector>> = onGetCollectors()
 
         override suspend fun getCollector(id: Int): Response<Collector> = error("getCollector no aplica")
