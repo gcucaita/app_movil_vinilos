@@ -28,6 +28,8 @@
         <activity android:name=".ui.musicians.MusicianDetailActivity"/>
         <activity android:name=".ui.collectors.CollectorListActivity"/>
         <activity android:name=".ui.collectors.CollectorDetailActivity"/>
+        <activity android:name=".ui.albums.CreateAlbumActivity"/>
+        <activity android:name=".ui.albums.AddTrackActivity"/>
     </application>
 
 </manifest>
