@@ -4,15 +4,19 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="6dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:importantForAccessibility="yes"
+    android:focusable="true"
+    android:contentDescription="@string/cd_album_card">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/albumCoverImage"
         android:layout_width="match_parent"
         android:layout_height="160dp"
-        android:contentDescription="@string/album_cover"
+        android:contentDescription="@string/cd_album_cover"
         android:scaleType="centerCrop"
         android:src="@drawable/cover_1"
+        android:importantForAccessibility="no"
         app:shapeAppearanceOverlay="@style/RoundedImage" />
 
     <TextView
@@ -24,7 +28,8 @@
         android:fontFamily="serif"
         android:maxLines="1"
         android:textColor="@color/title_text"
-        android:textSize="16sp" />
+        android:textSize="16sp"
+        android:importantForAccessibility="yes" />
 
     <TextView
         android:id="@+id/albumArtistText"
@@ -33,7 +38,8 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/body_text"
-        android:textSize="13sp" />
+        android:textSize="13sp"
+        android:importantForAccessibility="no" />
 
     <TextView
         android:id="@+id/albumMetaText"
@@ -42,6 +48,7 @@
         android:ellipsize="end"
         android:maxLines="1"
         android:textColor="@color/meta_text"
-        android:textSize="11sp" />
+        android:textSize="11sp"
+        android:importantForAccessibility="no" />
 
 </LinearLayout>

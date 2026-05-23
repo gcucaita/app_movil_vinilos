@@ -33,35 +33,35 @@
                 android:paddingHorizontal="20dp"
                 android:paddingBottom="24dp">
 
-                <!-- HEADER -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="18dp"
-                    android:text="New Release"
+                    android:text="@string/create_album_title"
                     android:textColor="@color/white"
                     android:textSize="40sp"
+                    android:fontFamily="@font/noto_serif_bold"
                     android:textStyle="bold"/>
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
-                    android:text="CURATION INTERFACE / PHASE 07"
-                    android:textColor="@color/meta_text"
-                    android:textSize="11sp"
-                    android:letterSpacing="0.12"/>
+                    android:layout_marginBottom="24dp"
+                    android:text="@string/create_album_subtitle"
+                    android:textColor="@color/secondary_soft"
+                    android:textSize="12sp"
+                    android:letterSpacing="0.1"
+                    android:fontFamily="@font/manrope_regular"/>
 
-                <!-- ALBUM NAME -->
+                <!-- NOMBRE -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="28dp"
-                    android:text="ALBUM NAME"
+                    android:text="@string/label_album_name"
                     android:textColor="@color/green_accent"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+                    android:textStyle="bold"/>
 
                 <EditText
                     android:id="@+id/etAlbumName"
@@ -69,23 +69,23 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_input"
-                    android:hint="e.g. Midnight Synths"
+                    android:hint="@string/hint_album_name"
                     android:textColor="@color/white"
                     android:textColorHint="@color/transparent_font"
                     android:textSize="16sp"
                     android:paddingHorizontal="16dp"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:contentDescription="@string/cd_album_name"/>
 
-                <!-- ARTIST -->
+                <!-- ARTISTA -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="ARTIST"
-                    android:textColor="@color/secondary_soft"
+                    android:text="@string/label_artist"
+                    android:textColor="@color/green_accent"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+                    android:textStyle="bold"/>
 
                 <Spinner
                     android:id="@+id/spArtist"
@@ -93,18 +93,17 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_input"
-                    android:paddingHorizontal="16dp"/>
+                    android:contentDescription="@string/cd_select_artist"/>
 
-                <!-- RELEASE DATE -->
+                <!-- FECHA -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="RELEASE DATE"
-                    android:textColor="@color/secondary_soft"
+                    android:text="@string/label_release_date"
+                    android:textColor="@color/green_accent"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+                    android:textStyle="bold"/>
 
                 <EditText
                     android:id="@+id/etReleaseDate"
@@ -112,23 +111,21 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_input"
-                    android:hint="YYYY-MM-DD"
+                    android:hint="@string/hint_date"
                     android:textColor="@color/white"
                     android:textColorHint="@color/transparent_font"
-                    android:textSize="16sp"
-                    android:paddingHorizontal="16dp"
-                    android:inputType="text"/>
+                    android:inputType="text"
+                    android:contentDescription="@string/cd_release_date"/>
 
-                <!-- GENRE -->
+                <!-- GÉNERO -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="GENRE SELECTION"
-                    android:textColor="@color/secondary_soft"
+                    android:text="@string/label_genre"
+                    android:textColor="@color/green_accent"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+                    android:textStyle="bold"/>
 
                 <Spinner
                     android:id="@+id/spGenre"
@@ -136,18 +133,17 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_input"
-                    android:paddingHorizontal="16dp"/>
+                    android:contentDescription="@string/cd_select_genre"/>
 
-                <!-- RECORD LABEL -->
+                <!-- DISQUERA -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="RECORD LABEL"
-                    android:textColor="@color/secondary_soft"
+                    android:text="@string/label_label"
+                    android:textColor="@color/green_accent"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+                    android:textStyle="bold"/>
 
                 <Spinner
                     android:id="@+id/spRecordLabel"
@@ -155,18 +151,17 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_input"
-                    android:paddingHorizontal="16dp"/>
+                    android:contentDescription="@string/cd_select_label"/>
 
-                <!-- DESCRIPTION -->
+                <!-- DESCRIPCIÓN -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="CURATOR'S NOTES"
-                    android:textColor="@color/secondary_soft"
+                    android:text="@string/label_description"
+                    android:textColor="@color/green_accent"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+                    android:textStyle="bold"/>
 
                 <EditText
                     android:id="@+id/etDescription"
@@ -174,25 +169,22 @@
                     android:layout_height="110dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_input"
-                    android:hint="Describe the sonic texture and archiving importance..."
+                    android:hint="@string/hint_description"
                     android:textColor="@color/white"
                     android:textColorHint="@color/transparent_font"
-                    android:textSize="14sp"
-                    android:paddingHorizontal="16dp"
-                    android:paddingTop="12dp"
+                    android:inputType="textMultiLine"
                     android:gravity="top"
-                    android:inputType="textMultiLine"/>
+                    android:contentDescription="@string/cd_description"/>
 
-                <!-- COVER URL -->
+                <!-- PORTADA -->
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
-                    android:text="COVER URL"
-                    android:textColor="@color/secondary_soft"
+                    android:text="@string/label_cover_url"
+                    android:textColor="@color/green_accent"
                     android:textSize="11sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"/>
+                    android:textStyle="bold"/>
 
                 <EditText
                     android:id="@+id/etCoverUrl"
@@ -200,65 +192,32 @@
                     android:layout_height="52dp"
                     android:layout_marginTop="6dp"
                     android:background="@drawable/bg_input"
-                    android:hint="https://..."
+                    android:hint="@string/hint_url"
                     android:textColor="@color/white"
-                    android:textColorHint="@color/transparent_font"
-                    android:textSize="14sp"
-                    android:paddingHorizontal="16dp"
-                    android:inputType="textUri"/>
+                    android:inputType="textUri"
+                    android:contentDescription="@string/cd_cover_url"/>
 
-                <!-- ARCHIVE BUTTON -->
+                <!-- BOTÓN -->
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCreateAlbum"
                     android:layout_width="match_parent"
                     android:layout_height="54dp"
                     android:layout_marginTop="28dp"
-                    android:text="⬡  Archivate Album"
-                    android:textSize="14sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.05"
+                    android:text="@string/action_archive_album"
+                    android:contentDescription="@string/cd_archive_album"
                     app:backgroundTint="@color/green_accent"
                     app:cornerRadius="4dp"/>
 
-                <!-- DISCARD -->
                 <TextView
+                    android:id="@+id/tvDiscard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="12dp"
-                    android:text="DISCARD"
-                    android:textColor="@color/meta_text"
-                    android:textSize="12sp"
-                    android:textStyle="bold"
-                    android:letterSpacing="0.1"
-                    android:gravity="center"/>
-
-                <!-- ARCHIVING GUIDELINES card -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    android:background="@color/bg_card"
-                    android:orientation="vertical"
-                    android:padding="16dp">
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="⊙  ARCHIVING GUIDELINES"
-                        android:textColor="@color/green_accent"
-                        android:textSize="11sp"
-                        android:textStyle="bold"
-                        android:letterSpacing="0.1"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="Ensure all metadata is verified before archiving. Archiving adds this release to the global digital ledger for all collectors to discover."
-                        android:textColor="@color/body_text"
-                        android:textSize="13sp"
-                        android:lineSpacingMultiplier="1.4"/>
-                </LinearLayout>
+                    android:text="@string/action_discard"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="@string/cd_discard"/>
 
             </LinearLayout>
         </LinearLayout>
