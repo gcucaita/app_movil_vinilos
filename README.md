@@ -17,7 +17,7 @@ La forma recomendada de probar la aplicación es descargando el APK publicado en
 
 1. Abrir la página de releases del repositorio:
    👉 [https://github.com/gcucaita/app_movil_vinilos/releases](https://github.com/gcucaita/app_movil_vinilos/releases)
-2. Ubicar el release más reciente (por ejemplo `v1.0.0`).
+2. Ubicar el release más reciente (por ejemplo `v3.0.0`).
 3. En la sección **Assets** del release, descargar el archivo:
 
    ```
@@ -215,17 +215,22 @@ app/src/
 │       ├── AlbumDetailViewModelTest.kt
 │       ├── MusicianListViewModelTest.kt
 │       ├── MusicianDetailViewModelTest.kt
-│       └── CollectorListViewModelTest.kt
+│       ├── CollectorListViewModelTest.kt
+│       ├── CreateAlbumFormValidator.kt
+│       └── CreateAlbumViewModelTest.kt
 │
 └── androidTest/java/com/example/vinilosapp/
     └── ui/
         ├── albums/
         │   ├── list/AlbumListUiTest.kt
-        │   └── detail/AlbumDetailUiTest.kt
+        │   ├── detail/AlbumDetailUiTest.kt
+        │   ├── AddTrackUiTest.kt
+        │   └── CreateAlbumUiTest.kt
         ├── musicians/
         │   ├── MusicianListUiTest.kt
         │   └── MusicianDetailUiTest.kt
         └── collectors/
+            ├── CollectorDetailUiTest.kt
             └── CollectorListUiTest.kt
 ```
 
@@ -245,10 +250,14 @@ app/src/
 ---
 
 ## Historias de usuario cubiertas
-
-- **HU03**: Listar artistas / músicos ✅
-- **HU04**: Ver detalles de artista ✅
-- **HU05**: Listar coleccionistas ✅
+- **HU01**: Consultar catálogo de álbumes ✅
+- **HU02**: Consultar la información detallada de un álbum ✅
+- **HU03**: Consultar el listado de artistas ✅
+- **HU04**: Consultar la información detallada de un artista ✅
+- **HU05**: Consultar listado de coleccionistas ✅
+- **HU06**: Consultar la información detallada de coleccionista ✅
+- **HU07**: Crear un álbum ✅
+- **HU08**: Asociar tracks con un álbum ✅
 
 ---
 
