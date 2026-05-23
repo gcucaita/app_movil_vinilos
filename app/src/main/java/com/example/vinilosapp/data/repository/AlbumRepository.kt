@@ -50,6 +50,8 @@ class AlbumRepository(
         try {
             val response = albumServiceAdapter.getAlbum(id)
             return@withContext if (response.isSuccessful) response.body() else null
+        } catch (e: Exception) {
+            null
         } finally {
             decrementIdlingResource()
         }
