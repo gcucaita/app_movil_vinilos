@@ -86,7 +86,6 @@ class MainActivity : BaseActivity() {
         }
 
         albumListViewModel = ViewModelProvider(this)[AlbumListViewModel::class.java]
-
         albumListViewModel.uiState.observe(this) { state ->
             when (state) {
                 is AlbumListUiState.Loading -> {
