@@ -4,7 +4,10 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:paddingVertical="10dp"
-    android:gravity="center_vertical">
+    android:gravity="center_vertical"
+    android:importantForAccessibility="yes"
+    android:focusable="true"
+    android:contentDescription="@string/cd_album_info_row">
 
     <TextView
         android:id="@+id/tvAlbumStatus"
@@ -15,7 +18,8 @@
         android:paddingVertical="4dp"
         android:textColor="@color/secondary_soft"
         android:textSize="11sp"
-        android:fontFamily="@font/manrope_regular"/>
+        android:fontFamily="@font/manrope_regular"
+        android:importantForAccessibility="yes" />
 
     <TextView
         android:id="@+id/tvAlbumPrice"
@@ -24,6 +28,7 @@
         android:layout_marginStart="12dp"
         android:textColor="@color/green_accent"
         android:textSize="14sp"
-        android:fontFamily="@font/manrope_regular"/>
+        android:fontFamily="@font/manrope_regular"
+        android:importantForAccessibility="yes" />
 
 </LinearLayout>

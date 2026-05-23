@@ -6,50 +6,67 @@
     android:background="@color/nav_background"
     android:gravity="center"
     android:orientation="horizontal"
-    android:paddingHorizontal="8dp">
+    android:paddingHorizontal="8dp"
+    android:importantForAccessibility="yes">
 
     <TextView
         android:id="@+id/navAlbums"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/nav_albums"
         android:textAllCaps="true"
         android:textColor="@color/nav_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:focusable="true"
+        android:clickable="true"
+        android:importantForAccessibility="yes"
+        android:contentDescription="Navegar a álbumes" />
 
     <TextView
         android:id="@+id/navArtists"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/nav_artists"
         android:textAllCaps="true"
         android:textColor="@color/nav_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:focusable="true"
+        android:clickable="true"
+        android:importantForAccessibility="yes"
+        android:contentDescription="Navegar a artistas" />
 
     <TextView
         android:id="@+id/navCollectors"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/nav_collectors"
         android:textAllCaps="true"
         android:textColor="@color/nav_text"
-        android:textSize="10sp" />
+        android:textSize="10sp"
+        android:focusable="true"
+        android:clickable="true"
+        android:importantForAccessibility="yes"
+        android:contentDescription="Navegar a coleccionistas" />
 
     <TextView
         android:id="@+id/navCollections"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:layout_weight="1"
         android:gravity="center"
         android:text="@string/nav_collections"
         android:textAllCaps="true"
         android:textColor="@color/nav_text"
-        android:textSize="12sp" />
+        android:textSize="12sp"
+        android:focusable="true"
+        android:clickable="true"
+        android:importantForAccessibility="yes"
+        android:contentDescription="Navegar a colecciones" />
 
 </LinearLayout>

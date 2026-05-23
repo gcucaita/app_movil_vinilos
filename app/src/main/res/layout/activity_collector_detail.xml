@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1C1C1C">
+    android:background="#1C1C1C"
+    android:importantForAccessibility="yes">
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -13,6 +14,8 @@
         android:layout_height="48dp"
         android:indeterminateTint="@color/green_accent"
         android:visibility="gone"
+        android:contentDescription="@string/cd_loading"
+        android:importantForAccessibility="yes"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,6 +27,8 @@
         android:layout_height="0dp"
         android:fillViewport="true"
         android:visibility="gone"
+        android:importantForAccessibility="yes"
+        android:contentDescription="@string/cd_collector_detail_scroll"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintStart_toStartOf="parent"
@@ -44,6 +49,8 @@
                 android:layout_height="300dp"
                 android:scaleType="centerCrop"
                 android:layout_margin="24dp"
+                android:contentDescription="@string/cd_collector_image"
+                android:importantForAccessibility="no"
                 app:shapeAppearanceOverlay="@style/RoundedImage"/>
 
             <LinearLayout
@@ -56,12 +63,13 @@
                     android:id="@+id/tvLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="VERIFIED COLLECTOR"
+                    android:text="@string/collector_verified_label"
                     android:textColor="@color/green_accent"
                     android:textSize="11sp"
                     android:letterSpacing="0.12"
                     android:fontFamily="@font/manrope_regular"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:importantForAccessibility="yes"/>
 
                 <TextView
                     android:id="@+id/tvName"
@@ -71,7 +79,8 @@
                     android:textSize="36sp"
                     android:textStyle="bold"
                     android:fontFamily="@font/noto_serif_bold"
-                    android:layout_marginBottom="16dp"/>
+                    android:layout_marginBottom="16dp"
+                    android:importantForAccessibility="yes"/>
 
                 <TextView
                     android:id="@+id/tvEmail"
@@ -80,7 +89,8 @@
                     android:textColor="@color/secondary_soft"
                     android:textSize="14sp"
                     android:fontFamily="@font/manrope_regular"
-                    android:layout_marginBottom="8dp"/>
+                    android:layout_marginBottom="8dp"
+                    android:importantForAccessibility="yes"/>
 
                 <TextView
                     android:id="@+id/tvPhone"
@@ -89,24 +99,27 @@
                     android:textColor="@color/secondary_soft"
                     android:textSize="14sp"
                     android:fontFamily="@font/manrope_regular"
-                    android:layout_marginBottom="20dp"/>
+                    android:layout_marginBottom="20dp"
+                    android:importantForAccessibility="yes"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="ÁLBUMES"
+                    android:text="@string/collector_albums_title"
                     android:textColor="@color/green_accent"
                     android:textSize="11sp"
                     android:letterSpacing="0.12"
                     android:fontFamily="@font/manrope_regular"
-                    android:layout_marginBottom="12dp"/>
+                    android:layout_marginBottom="12dp"
+                    android:importantForAccessibility="yes"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvAlbums"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:nestedScrollingEnabled="false"
-                    android:layout_marginBottom="24dp"/>
+                    android:layout_marginBottom="24dp"
+                    android:importantForAccessibility="yes"/>
 
             </LinearLayout>
         </LinearLayout>
