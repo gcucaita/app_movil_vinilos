@@ -2,9 +2,11 @@ package com.example.vinilosapp.data.serviceadapter
 
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.data.network.request.CreateAlbumRequest
+import com.example.vinilosapp.data.network.request.CreateTrackRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
+import com.example.vinilosapp.domain.model.Track
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -63,6 +65,21 @@ class AlbumServiceAdapterTest {
         assertEquals(request, api.lastCreateAlbumRequest)
     }
 
+    @Test
+    fun `addTrack delega en la API y reenvia albumId y payload`() = runBlocking {
+        val request = CreateTrackRequest(name = "So What", duration = "09:22")
+        val expected = Track(id = 1, name = "So What", duration = "09:22")
+        val api = FakeApi(onAddTrack = { _, _ -> Response.success(expected) })
+        val adapter = AlbumServiceAdapter(api)
+
+        val response = adapter.addTrack(albumId = 1, request = request)
+
+        assertTrue(response.isSuccessful)
+        assertEquals(expected, response.body())
+        assertEquals(1, api.lastAddTrackAlbumId)
+        assertEquals(request, api.lastAddTrackRequest)
+    }
+
     private fun albumFixture(id: Int): Album = Album(
         id = id,
         name = "Album $id",
@@ -80,6 +97,7 @@ class AlbumServiceAdapterTest {
         private val onGetAlbums: () -> Response<List<Album>> = { error("getAlbums no stubbeado") },
         private val onGetAlbum: (Int) -> Response<Album> = { error("getAlbum no stubbeado") },
         private val onCreateAlbum: (CreateAlbumRequest) -> Response<Album> = { error("createAlbum no stubbeado") },
+        private val onAddTrack: (Int, CreateTrackRequest) -> Response<Track> = { _, _ -> error("addTrack no stubbeado") },
     ) : VinilosApiService {
 
         var getAlbumsCalls: Int = 0
@@ -87,6 +105,10 @@ class AlbumServiceAdapterTest {
         var lastRequestedAlbumId: Int? = null
             private set
         var lastCreateAlbumRequest: CreateAlbumRequest? = null
+            private set
+        var lastAddTrackAlbumId: Int? = null
+            private set
+        var lastAddTrackRequest: CreateTrackRequest? = null
             private set
 
         override suspend fun getAlbums(): Response<List<Album>> {
@@ -111,5 +133,15 @@ class AlbumServiceAdapterTest {
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
 
         override suspend fun getMusician(id: Int): Response<Performer> = error("getMusician no aplica")
+
+        override suspend fun addTrack(albumId: Int, request: CreateTrackRequest): Response<Track> {
+            lastAddTrackAlbumId = albumId
+            lastAddTrackRequest = request
+            return onAddTrack(albumId, request)
+        }
+
+        override suspend fun getBands(): Response<List<Performer>> = Response.success(emptyList())
+
+        override suspend fun addPerformerToAlbum(albumId: Int, performerId: Int): Response<Album> = error("addPerformerToAlbum no aplica")
     }
 }

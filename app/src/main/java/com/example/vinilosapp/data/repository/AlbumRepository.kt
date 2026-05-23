@@ -50,12 +50,13 @@ class AlbumRepository(
         try {
             val response = albumServiceAdapter.getAlbum(id)
             return@withContext if (response.isSuccessful) response.body() else null
+        } catch (e: Exception) {
+            null
         } finally {
             decrementIdlingResource()
         }
     }
 
-    // ✅ SOLO UNA versión (IMPORTANTE)
     suspend fun createAlbum(request: CreateAlbumRequest): Album? = withContext(ioDispatcher) {
         incrementIdlingResource()
         try {

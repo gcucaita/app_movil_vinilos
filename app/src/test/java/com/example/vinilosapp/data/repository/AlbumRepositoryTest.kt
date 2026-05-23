@@ -3,9 +3,11 @@ package com.example.vinilosapp.data.repository
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
 import com.example.vinilosapp.data.network.request.CreateAlbumRequest
+import com.example.vinilosapp.data.network.request.CreateTrackRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
+import com.example.vinilosapp.domain.model.Track
 import kotlinx.coroutines.runBlocking
 import okhttp3.MediaType
 import okhttp3.ResponseBody
@@ -132,30 +134,74 @@ class AlbumRepositoryTest {
         CacheManager.putAlbumsList(catalogo())
         val result = repository.createAlbum(request)
 
-        assertTrue(result.isSuccess)
-        assertEquals(expected, result.getOrNull())
+        assertNotNull(result)
+        assertEquals(expected, result)
         assertEquals(request, api.lastCreateAlbumRequest)
         assertNull(CacheManager.getAlbumsList())
     }
 
     @Test
-    fun `createAlbum devuelve error cuando la API responde con error HTTP`() = runBlocking {
+    fun `createAlbum devuelve null cuando la API responde con error HTTP`() = runBlocking {
         val api = FakeVinilosApiService(onCreateAlbum = { Response.error(400, errorBody()) })
         val repository = AlbumRepository(api)
 
         val result = repository.createAlbum(createAlbumRequest())
 
-        assertTrue(result.isFailure)
+        assertNull(result)
     }
 
     @Test
-    fun `createAlbum devuelve error cuando la API lanza excepcion`() = runBlocking {
+    fun `createAlbum propaga excepcion cuando la API lanza excepcion`() = runBlocking {
         val api = FakeVinilosApiService(onCreateAlbum = { throw IllegalStateException("oops") })
         val repository = AlbumRepository(api)
 
-        val result = repository.createAlbum(createAlbumRequest())
+        var caught: Throwable? = null
+        try {
+            repository.createAlbum(createAlbumRequest())
+        } catch (e: IllegalStateException) {
+            caught = e
+        }
 
-        assertTrue(result.isFailure)
+        assertNotNull(caught)
+    }
+
+    // HU08 – Asociar tracks con álbum
+
+    @Test
+    fun `addTrack devuelve track cuando la API responde 200`() = runBlocking {
+        val request = CreateTrackRequest(name = "So What", duration = "09:22")
+        val expected = Track(id = 1, name = "So What", duration = "09:22")
+        val api = FakeVinilosApiService(onAddTrack = { _, _ -> Response.success(expected) })
+        val repository = AlbumRepository(api)
+
+        val result = repository.addTrack(albumId = 1, request = request)
+
+        assertEquals(expected, result)
+    }
+
+    @Test
+    fun `addTrack devuelve null cuando la API responde con body nulo`() = runBlocking {
+        val api = FakeVinilosApiService(onAddTrack = { _, _ -> Response.success(null) })
+        val repository = AlbumRepository(api)
+
+        val result = repository.addTrack(albumId = 1, CreateTrackRequest("X", "00:30"))
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `addTrack propaga excepcion cuando la API lanza excepcion`() = runBlocking {
+        val api = FakeVinilosApiService(onAddTrack = { _, _ -> throw IllegalStateException("timeout") })
+        val repository = AlbumRepository(api)
+
+        var caught: Throwable? = null
+        try {
+            repository.addTrack(albumId = 1, CreateTrackRequest("X", "00:30"))
+        } catch (e: IllegalStateException) {
+            caught = e
+        }
+
+        assertNotNull(caught)
     }
 
     private fun catalogo(): List<Album> = listOf(albumFixture(id = 100), albumFixture(id = 101))
@@ -189,6 +235,7 @@ private fun errorBody(): ResponseBody =
         private val onGetAlbums: () -> Response<List<Album>> = { error("getAlbums no stubbeado") },
         private val onGetAlbum: (Int) -> Response<Album> = { error("getAlbum no stubbeado") },
         private val onCreateAlbum: (CreateAlbumRequest) -> Response<Album> = { error("createAlbum no stubbeado") },
+        private val onAddTrack: (Int, CreateTrackRequest) -> Response<Track> = { _, _ -> error("addTrack no stubbeado") },
     ) : VinilosApiService {
 
         var getAlbumsCalls: Int = 0
@@ -220,5 +267,11 @@ private fun errorBody(): ResponseBody =
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
 
         override suspend fun getMusician(id: Int): Response<Performer> = error("getMusician no aplica")
+
+        override suspend fun addTrack(albumId: Int, request: CreateTrackRequest): Response<Track> = onAddTrack(albumId, request)
+
+        override suspend fun getBands(): Response<List<Performer>> = Response.success(emptyList())
+
+        override suspend fun addPerformerToAlbum(albumId: Int, performerId: Int): Response<Album> = error("addPerformerToAlbum no aplica")
     }
 }
