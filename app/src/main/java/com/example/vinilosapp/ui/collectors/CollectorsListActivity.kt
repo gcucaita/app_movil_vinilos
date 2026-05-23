@@ -1,29 +1,22 @@
 package com.example.vinilosapp.ui.collectors
 
-import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.vinilosapp.MainActivity
 import com.example.vinilosapp.R
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.presentation.uistate.CollectorListUiState
 import com.example.vinilosapp.presentation.viewmodel.CollectorListViewModel
-import com.example.vinilosapp.ui.musicians.MusicianListActivity
+import com.example.vinilosapp.ui.base.BaseActivity
 
-class CollectorListActivity : AppCompatActivity() {
+class CollectorListActivity : BaseActivity() {
 
     private lateinit var viewModel: CollectorListViewModel
     private lateinit var adapter: CollectorListAdapter
@@ -32,14 +25,7 @@ class CollectorListActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_collector_list)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.contentContainer)) { view, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
 
         // Toolbar
         val toolbar = findViewById<View>(R.id.toolbar)
@@ -53,11 +39,13 @@ class CollectorListActivity : AppCompatActivity() {
 
         val recyclerView = findViewById<RecyclerView>(R.id.collectorsRecyclerView)
         val loadingIndicator = findViewById<View>(R.id.loadingIndicator)
-        val errorText = findViewById<TextView>(R.id.errorText)
+        val errorText = findViewById<android.widget.TextView>(R.id.errorText)
         val searchInput = findViewById<EditText>(R.id.searchInput)
 
         adapter = CollectorListAdapter { collector ->
-            // navegar al detalle cuando esté listo
+            val intent = android.content.Intent(this, CollectorDetailActivity::class.java)
+            intent.putExtra("collectorId", collector.id)
+            startActivity(intent)
         }
 
         recyclerView.apply {
@@ -96,17 +84,8 @@ class CollectorListActivity : AppCompatActivity() {
             }
         })
 
-        // BottomNav
-        findViewById<TextView>(R.id.navAlbums).setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
-            finish()
-        }
-        findViewById<TextView>(R.id.navArtists).setOnClickListener {
-            startActivity(Intent(this, MusicianListActivity::class.java))
-            finish()
-        }
-
         viewModel.loadCollectors()
+        setupBottomNav(2)
     }
 
     private fun applyFilter() {

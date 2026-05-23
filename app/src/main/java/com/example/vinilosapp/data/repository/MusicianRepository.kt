@@ -48,6 +48,16 @@ class MusicianRepository(
         return null
     }
 
+    suspend fun getAllBands(): List<Performer>? {
+        incrementIdlingResource()
+        return try {
+            val response = musicianServiceAdapter.getBands()
+            if (response.isSuccessful) response.body() else null
+        } finally {
+            decrementIdlingResource()
+        }
+    }
+
     suspend fun getMusician(id: Int): Performer? {
         incrementIdlingResource()
         return try {

@@ -3,8 +3,11 @@ package com.example.vinilosapp.data.repository
 import android.util.Log
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
+import com.example.vinilosapp.data.network.request.CreateTrackRequest
 import com.example.vinilosapp.data.serviceadapter.AlbumServiceAdapter
 import com.example.vinilosapp.domain.model.Album
+import com.example.vinilosapp.domain.model.Track
 import com.example.vinilosapp.helpers.EspressoIdlingResource
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -18,15 +21,9 @@ class AlbumRepository(
     constructor(apiService: VinilosApiService) : this(AlbumServiceAdapter(apiService))
 
     suspend fun getAllAlbums(): List<Album>? = withContext(ioDispatcher) {
-        CacheManager.getAlbumsList()?.let { cachedAlbums ->
-            logDebug("Using cached albums data")
-            return@withContext cachedAlbums
-        }
+        CacheManager.getAlbumsList()?.let { return@withContext it }
 
-        logDebug("Fetching albums data from API")
         incrementIdlingResource()
-
-        var lastError: Exception? = null
 
         try {
             repeat(3) { attempt ->
@@ -34,15 +31,10 @@ class AlbumRepository(
                     val response = albumServiceAdapter.getAlbums()
                     if (response.isSuccessful) {
                         val albums = response.body()
-                        logDebug("Data received: $albums")
                         albums?.let { CacheManager.putAlbumsList(it) }
                         return@withContext albums
-                    } else {
-                        logError("API Error Response: ${response.errorBody()?.string()}")
                     }
                 } catch (e: Exception) {
-                    lastError = e
-                    logError("Attempt ${attempt + 1} failed: ${e.message}", e)
                     if (attempt < 2) delay(2000)
                 }
             }
@@ -50,7 +42,6 @@ class AlbumRepository(
             decrementIdlingResource()
         }
 
-        logError("All attempts failed: ${lastError?.message}", lastError)
         null
     }
 
@@ -58,21 +49,40 @@ class AlbumRepository(
         incrementIdlingResource()
         try {
             val response = albumServiceAdapter.getAlbum(id)
-            if (response.isSuccessful) {
-                val album = response.body()
-                logDebug("Album received: $album")
-                album
-            } else {
-                logError("API Error Response: ${response.errorBody()?.string()}")
-                null
-            }
+            return@withContext if (response.isSuccessful) response.body() else null
         } catch (e: Exception) {
-            logError("Network Exception: ${e.message}", e)
             null
         } finally {
             decrementIdlingResource()
         }
     }
+
+    suspend fun createAlbum(request: CreateAlbumRequest): Album? = withContext(ioDispatcher) {
+        incrementIdlingResource()
+        try {
+            val response = albumServiceAdapter.createAlbum(request)
+            val album = response.body()
+
+            if (response.isSuccessful && album != null) {
+                CacheManager.invalidateAlbumsListCache()
+                return@withContext album
+            }
+            null
+        } finally {
+            decrementIdlingResource()
+        }
+    }
+
+    suspend fun addTrack(albumId: Int, request: CreateTrackRequest): Track? =
+        withContext(ioDispatcher) {
+            incrementIdlingResource()
+            try {
+                val response = albumServiceAdapter.addTrack(albumId, request)
+                response.body()
+            } finally {
+                decrementIdlingResource()
+            }
+        }
 
     private fun incrementIdlingResource() {
         runCatching { EspressoIdlingResource.increment() }
@@ -82,11 +92,16 @@ class AlbumRepository(
         runCatching { EspressoIdlingResource.decrement() }
     }
 
-    private fun logDebug(message: String) {
-        runCatching { Log.d("AlbumRepository", message) }
+    private fun logError(message: String) {
+        runCatching { Log.e("AlbumRepository", message) }
     }
-
-    private fun logError(message: String, throwable: Throwable? = null) {
-        runCatching { Log.e("AlbumRepository", message, throwable) }
+    suspend fun addPerformerToAlbum(albumId: Int, performerId: Int): Album? = withContext(ioDispatcher) {
+        incrementIdlingResource()
+        try {
+            val response = albumServiceAdapter.addPerformerToAlbum(albumId, performerId)
+            if (response.isSuccessful) response.body() else null
+        } finally {
+            decrementIdlingResource()
+        }
     }
 }

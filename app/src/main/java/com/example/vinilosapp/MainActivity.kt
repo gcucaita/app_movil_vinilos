@@ -13,7 +13,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.ViewModelProvider
@@ -23,12 +22,15 @@ import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.presentation.uistate.AlbumListUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumListViewModel
+import com.example.vinilosapp.ui.albums.CreateAlbumActivity
 import com.example.vinilosapp.ui.albums.detail.AlbumDetailActivity
 import com.example.vinilosapp.ui.albums.list.AlbumListAdapter
-import com.example.vinilosapp.ui.musicians.MusicianListActivity
+import com.example.vinilosapp.ui.base.BaseActivity
 import com.example.vinilosapp.ui.collectors.CollectorListActivity
+import com.example.vinilosapp.ui.musicians.MusicianListActivity
+import com.google.android.material.button.MaterialButton
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
 
     private lateinit var albumListViewModel: AlbumListViewModel
     private lateinit var albumListAdapter: AlbumListAdapter
@@ -66,12 +68,9 @@ class MainActivity : AppCompatActivity() {
         btnNavIcon.setImageResource(R.drawable.menu)
         refreshButton = toolbar.findViewById(R.id.refreshButton)
 
-        // BottomNav
-        findViewById<TextView>(R.id.navArtists).setOnClickListener {
-            startActivity(Intent(this, MusicianListActivity::class.java))
-        }
-        findViewById<TextView>(R.id.navCollectors).setOnClickListener {
-            startActivity(Intent(this, CollectorListActivity::class.java))
+        // FAB
+        findViewById<MaterialButton>(R.id.fabAdd).setOnClickListener {
+            startActivity(Intent(this, CreateAlbumActivity::class.java))
         }
 
         albumListAdapter = AlbumListAdapter { album ->
@@ -128,6 +127,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         albumListViewModel.loadAlbums()
+        setupBottomNav(0)
     }
 
     private fun applyFilters() {
