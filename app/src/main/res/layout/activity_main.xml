@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
+    android:importantForAccessibility="yes"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -22,9 +23,10 @@
 
         <include
             android:id="@+id/toolbar"
-            layout="@layout/view_header"/>
+            layout="@layout/view_header" />
 
         <TextView
+            android:id="@+id/tvAlbumsTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="18dp"
@@ -33,31 +35,40 @@
             android:text="@string/albums_title"
             android:textColor="@color/white"
             android:textSize="48sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:importantForAccessibility="yes" />
 
         <TextView
+            android:id="@+id/tvAlbumsSubtitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:maxLines="2"
             android:text="@string/albums_subtitle"
             android:textColor="@color/secondary_soft"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            android:importantForAccessibility="yes" />
 
         <LinearLayout
+            android:id="@+id/searchContainer"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="14dp"
             android:background="@drawable/bg_search_bar"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingHorizontal="12dp">
+            android:paddingHorizontal="12dp"
+            android:importantForAccessibility="yes"
+            android:contentDescription="@string/cd_search_bar_albums">
 
             <ImageView
+                android:id="@+id/searchIcon"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/search"
-                android:tint="@color/search_text"/>
+                android:tint="@color/search_text"
+                android:contentDescription="@string/cd_search_icon"
+                android:importantForAccessibility="no" />
 
             <EditText
                 android:id="@+id/searchInput"
@@ -72,7 +83,9 @@
                 android:inputType="text"
                 android:background="@null"
                 android:imeOptions="actionSearch"
-                android:maxLines="1"/>
+                android:maxLines="1"
+                android:importantForAccessibility="yes"
+                android:contentDescription="@string/cd_search_input_albums" />
 
         </LinearLayout>
 
@@ -80,13 +93,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:scrollbars="none">
+            android:scrollbars="none"
+            android:contentDescription="@string/cd_filters_scroll"
+            android:importantForAccessibility="yes">
 
             <LinearLayout
                 android:id="@+id/chipsContainer"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"/>
+                android:orientation="horizontal"
+                android:importantForAccessibility="yes" />
 
         </HorizontalScrollView>
 
@@ -99,7 +115,8 @@
             android:text="@string/albums_error"
             android:textColor="@color/body_text"
             android:textSize="14sp"
-            android:visibility="gone" />
+            android:visibility="gone"
+            android:importantForAccessibility="yes" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/albumsRecyclerView"
@@ -110,6 +127,7 @@
             android:clipToPadding="false"
             android:paddingBottom="8dp"
             android:overScrollMode="never"
+            android:importantForAccessibility="yes"
             tools:itemCount="8"
             tools:listitem="@layout/item_album" />
 
@@ -134,65 +152,18 @@
         app:strokeWidth="2dp"
         app:cornerRadius="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        android:contentDescription="@string/cd_add_album"
+        android:importantForAccessibility="yes" />
 
-    <LinearLayout
+    <include
         android:id="@+id/bottomNav"
+        layout="@layout/view_bottom_nav"
         android:layout_width="0dp"
         android:layout_height="60dp"
-        android:background="@color/nav_background"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:paddingHorizontal="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-
-        <TextView
-            android:id="@+id/navAlbums"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_albums"
-            android:textAllCaps="true"
-            android:textColor="@color/green_accent"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/navArtists"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_artists"
-            android:textAllCaps="true"
-            android:textColor="@color/nav_text"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/navCollectors"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_collectors"
-            android:textAllCaps="true"
-            android:textColor="@color/nav_text"
-            android:textSize="12sp" />
-
-        <TextView
-            android:id="@+id/navCollections"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:text="@string/nav_collections"
-            android:textAllCaps="true"
-            android:textColor="@color/nav_text"
-            android:textSize="12sp" />
-
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ProgressBar
         android:id="@+id/loadingIndicator"
@@ -201,6 +172,8 @@
         android:layout_height="40dp"
         android:indeterminateTint="@color/green_accent"
         android:visibility="gone"
+        android:contentDescription="@string/cd_loading"
+        android:importantForAccessibility="yes"
         app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
