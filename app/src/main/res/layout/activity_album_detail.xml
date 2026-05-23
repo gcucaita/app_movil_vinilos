@@ -135,7 +135,19 @@
                     android:letterSpacing="0.08"
                     app:backgroundTint="@color/green_accent"
                     app:cornerRadius="25dp" />
-
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnAddTracks"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="28dp"
+                    android:text="+ AGREGAR TRACKS"
+                    android:textColor="@color/green_accent"
+                    android:textSize="14sp"
+                    android:letterSpacing="0.08"
+                    app:backgroundTint="@android:color/transparent"
+                    app:strokeColor="@color/green_accent"
+                    app:strokeWidth="2dp"
+                    app:cornerRadius="25dp"/>
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -174,4 +186,12 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+    <include
+        android:id="@+id/bottomNav"
+        layout="@layout/view_bottom_nav"
+        android:layout_width="0dp"
+        android:layout_height="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

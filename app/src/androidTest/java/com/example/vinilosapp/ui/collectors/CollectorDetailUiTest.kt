@@ -5,9 +5,7 @@ import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.matcher.ViewMatchers.Visibility
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withEffectiveVisibility
@@ -23,6 +21,7 @@ import com.example.vinilosapp.data.network.request.CreateAlbumRequest
 import com.example.vinilosapp.data.network.request.CreateTrackRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
+import com.example.vinilosapp.domain.model.CollectorAlbum
 import com.example.vinilosapp.domain.model.Performer
 import com.example.vinilosapp.domain.model.Track
 import com.example.vinilosapp.helpers.EspressoIdlingResource
@@ -32,15 +31,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import retrofit2.Response
-import java.io.IOException
 
 @RunWith(AndroidJUnit4::class)
-class CollectorListUiTest {
+class CollectorDetailUiTest {
 
     private var idlingRegistered = false
 
     @get:Rule
-    val activityRule = ActivityTestRule(CollectorListActivity::class.java, true, false)
+    val activityRule = ActivityTestRule(CollectorDetailActivity::class.java, true, false)
 
     @Before
     fun setUp() {
@@ -59,62 +57,85 @@ class CollectorListUiTest {
         RetrofitInstance.reset()
     }
 
+    // HU06 – Consultar la información detallada de coleccionista
+
     @Test
-    fun displaysCollectorListLoadedFromApi() {
-        RetrofitInstance.setApiForTesting(FakeApi(collectors = sampleCollectors()))
+    fun muestraNombreEmailYTelefonoDelColeccionista() {
+        RetrofitInstance.setApiForTesting(FakeApi(collector = collectorConAlbumes()))
 
-        launchActivity()
+        launchActivity(collectorId = 1)
 
-        onView(withId(R.id.collectorsRecyclerView)).check(matches(isDisplayed()))
-        onView(withText("Manolo Bellon")).check(matches(isDisplayed()))
-        onView(withText("Juan Gomez")).check(matches(isDisplayed()))
-        onView(withId(R.id.errorText)).check(matches(withEffectiveVisibility(Visibility.GONE)))
+        onView(withId(R.id.tvName)).check(matches(withText("Manolo Bellon")))
+        onView(withId(R.id.tvEmail)).check(matches(withText("manollo@caracol.com.co")))
+        onView(withId(R.id.tvPhone)).check(matches(withText("3502457896")))
     }
 
     @Test
-    fun showsErrorWhenApiFails() {
-        RetrofitInstance.setApiForTesting(
-            FakeApi(onGetCollectors = { throw IOException("network error") })
-        )
+    fun muestraListaDeAlbumesDelColeccionistaCuandoTieneAlbumes() {
+        RetrofitInstance.setApiForTesting(FakeApi(collector = collectorConAlbumes()))
 
-        launchActivity()
+        launchActivity(collectorId = 1)
 
-        onView(withId(R.id.errorText)).check(matches(isDisplayed()))
+        onView(withId(R.id.rvAlbums)).check(matches(isDisplayed()))
     }
 
     @Test
-    fun filtersCollectorsByName() {
-        RetrofitInstance.setApiForTesting(FakeApi(collectors = sampleCollectors()))
+    fun ocultaListaDeAlbumesWhenColeccionistaNoTieneAlbumes() {
+        RetrofitInstance.setApiForTesting(FakeApi(collector = collectorSinAlbumes()))
 
-        launchActivity()
+        launchActivity(collectorId = 2)
 
-        onView(withId(R.id.searchInput)).perform(replaceText("Manolo"))
-
-        onView(withText("Manolo Bellon")).check(matches(isDisplayed()))
+        onView(withId(R.id.rvAlbums)).check(matches(withEffectiveVisibility(Visibility.GONE)))
     }
 
-    private fun launchActivity() {
+    @Test
+    fun muestraScrollViewCuandoLosDatosCargaCorrectamente() {
+        RetrofitInstance.setApiForTesting(FakeApi(collector = collectorConAlbumes()))
+
+        launchActivity(collectorId = 1)
+
+        onView(withId(R.id.scrollView)).check(matches(isDisplayed()))
+    }
+
+    private fun launchActivity(collectorId: Int) {
         val context = ApplicationProvider.getApplicationContext<Context>()
-        val intent = Intent(context, CollectorListActivity::class.java).apply {
+        val intent = Intent(context, CollectorDetailActivity::class.java).apply {
+            putExtra("collectorId", collectorId)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         activityRule.launchActivity(intent)
     }
 
-    private fun sampleCollectors() = listOf(
-        Collector(id = 1, name = "Manolo Bellon", telephone = "3502457896", email = "manollo@caracol.com.co", comments = emptyList(), favoritePerformers = emptyList(), collectorAlbums = emptyList()),
-        Collector(id = 2, name = "Juan Gomez", telephone = "3107654321", email = "juan@example.com", comments = emptyList(), favoritePerformers = emptyList(), collectorAlbums = emptyList())
+    private fun collectorConAlbumes() = Collector(
+        id = 1,
+        name = "Manolo Bellon",
+        telephone = "3502457896",
+        email = "manollo@caracol.com.co",
+        comments = emptyList(),
+        favoritePerformers = emptyList(),
+        collectorAlbums = listOf(
+            CollectorAlbum(id = 10, price = 35, status = "Active")
+        )
+    )
+
+    private fun collectorSinAlbumes() = Collector(
+        id = 2,
+        name = "Juan Gomez",
+        telephone = "3107654321",
+        email = "juan@example.com",
+        comments = emptyList(),
+        favoritePerformers = emptyList(),
+        collectorAlbums = emptyList()
     )
 
     private class FakeApi(
-        private val collectors: List<Collector> = emptyList(),
-        private val onGetCollectors: () -> Response<List<Collector>> = { Response.success(collectors) },
+        private val collector: Collector,
     ) : VinilosApiService {
         override suspend fun getAlbums(): Response<List<Album>> = Response.success(emptyList())
         override suspend fun getAlbum(id: Int): Response<Album> = error("no aplica")
         override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("no aplica")
-        override suspend fun getCollectors(): Response<List<Collector>> = onGetCollectors()
-        override suspend fun getCollector(id: Int): Response<Collector> = error("no aplica")
+        override suspend fun getCollectors(): Response<List<Collector>> = Response.success(listOf(collector))
+        override suspend fun getCollector(id: Int): Response<Collector> = Response.success(collector)
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
         override suspend fun getMusician(id: Int): Response<Performer> = error("no aplica")
         override suspend fun addTrack(albumId: Int, request: CreateTrackRequest): Response<Track> = error("addTrack no aplica")

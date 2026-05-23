@@ -14,7 +14,7 @@
         android:indeterminateTint="@color/green_accent"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -25,7 +25,7 @@
         android:fillViewport="true"
         android:visibility="gone"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottomNav"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -38,9 +38,8 @@
                 android:id="@+id/toolbar"
                 layout="@layout/view_header"/>
 
-            <!-- Imagen del artista -->
             <com.google.android.material.imageview.ShapeableImageView
-                android:id="@+id/imgMusician"
+                android:id="@+id/imgCollector"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 android:scaleType="centerCrop"
@@ -53,33 +52,38 @@
                 android:orientation="vertical"
                 android:paddingHorizontal="20dp">
 
-                <!-- Etiqueta -->
                 <TextView
                     android:id="@+id/tvLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="FEATURED ARCHIVIST SELECTION"
+                    android:text="VERIFIED COLLECTOR"
                     android:textColor="@color/green_accent"
                     android:textSize="11sp"
                     android:letterSpacing="0.12"
                     android:fontFamily="@font/manrope_regular"
                     android:layout_marginBottom="8dp"/>
 
-                <!-- Nombre -->
                 <TextView
                     android:id="@+id/tvName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:textSize="48sp"
+                    android:textSize="36sp"
                     android:textStyle="bold"
                     android:fontFamily="@font/noto_serif_bold"
-                    android:letterSpacing="-0.05"
-                    android:layout_marginBottom="10dp"/>
+                    android:layout_marginBottom="16dp"/>
 
-                <!-- Fecha -->
                 <TextView
-                    android:id="@+id/tvDate"
+                    android:id="@+id/tvEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/secondary_soft"
+                    android:textSize="14sp"
+                    android:fontFamily="@font/manrope_regular"
+                    android:layout_marginBottom="8dp"/>
+
+                <TextView
+                    android:id="@+id/tvPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/secondary_soft"
@@ -87,23 +91,27 @@
                     android:fontFamily="@font/manrope_regular"
                     android:layout_marginBottom="20dp"/>
 
-                <!-- Descripción -->
                 <TextView
-                    android:id="@+id/tvDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ÁLBUMES"
+                    android:textColor="@color/green_accent"
+                    android:textSize="11sp"
+                    android:letterSpacing="0.12"
+                    android:fontFamily="@font/manrope_regular"
+                    android:layout_marginBottom="12dp"/>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvAlbums"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_rounded_card"
-                    android:padding="16dp"
-                    android:textColor="@color/secondary_soft"
-                    android:textSize="15sp"
-                    android:fontFamily="@font/manrope_regular"
-                    android:lineSpacingMultiplier="1.6"
+                    android:nestedScrollingEnabled="false"
                     android:layout_marginBottom="24dp"/>
 
             </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
+
     <include
         android:id="@+id/bottomNav"
         layout="@layout/view_bottom_nav"
@@ -112,4 +120,5 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
