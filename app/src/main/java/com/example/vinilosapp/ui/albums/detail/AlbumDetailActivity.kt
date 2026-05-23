@@ -1,45 +1,62 @@
 package com.example.vinilosapp.ui.albums.detail
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.vinilosapp.R
 import com.example.vinilosapp.databinding.ActivityAlbumDetailBinding
 import com.example.vinilosapp.presentation.uistate.AlbumDetailUiState
 import com.example.vinilosapp.presentation.viewmodel.AlbumDetailViewModel
+import com.example.vinilosapp.ui.albums.AddTrackActivity
+import com.example.vinilosapp.ui.base.BaseActivity
 
-class AlbumDetailActivity : AppCompatActivity() {
+class AlbumDetailActivity : BaseActivity() {
 
     private lateinit var binding: ActivityAlbumDetailBinding
     private val viewModel: AlbumDetailViewModel by viewModels()
     private lateinit var trackAdapter: TrackAdapter
+    private var albumId: Int = -1
+
+    private val addTrackLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) {
+        viewModel.loadAlbum(albumId) // recarga al volver
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityAlbumDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val albumId = intent.getIntExtra("albumId", -1)
+        albumId = intent.getIntExtra("albumId", -1)
+
         if (albumId == -1) {
             Toast.makeText(this, "Álbum no encontrado", Toast.LENGTH_SHORT).show()
             finish()
             return
         }
 
+        setupToolbar()
+        setupRecyclerView()
+        setupBottomNav(0)
+
+        viewModel.loadAlbum(albumId)
+        observeViewModel()
+    }
+
+    private fun setupToolbar() {
         val btnNavIcon = binding.toolbar.root.findViewById<ImageView>(R.id.btnNavIcon)
         val refreshBtn = binding.toolbar.root.findViewById<ImageView>(R.id.refreshButton)
         btnNavIcon.setImageResource(R.drawable.outline_arrow_back_24)
         btnNavIcon.setOnClickListener { finish() }
         refreshBtn.visibility = View.GONE
-
-        setupRecyclerView()
-        viewModel.loadAlbum(albumId)
-        observeViewModel()
     }
 
     private fun setupRecyclerView() {
@@ -63,6 +80,7 @@ class AlbumDetailActivity : AppCompatActivity() {
                     binding.scrollView.visibility = View.VISIBLE
 
                     val album = state.album
+
                     binding.tvName.text = album.name
                     binding.tvDescription.text = formatAlbumDetailDescription(album.description, "Sin descripción")
                     binding.tvRecordLabel.text = formatAlbumDetailRecordLabel(album.recordLabel)
@@ -80,6 +98,12 @@ class AlbumDetailActivity : AppCompatActivity() {
                     } else {
                         binding.rvTracks.visibility = View.VISIBLE
                         trackAdapter.updateTracks(tracks)
+                    }
+
+                    binding.btnAddTracks.setOnClickListener {
+                        val intent = Intent(this, AddTrackActivity::class.java)
+                        intent.putExtra("albumId", albumId)
+                        addTrackLauncher.launch(intent) // ← cambiado
                     }
                 }
                 is AlbumDetailUiState.Error -> {

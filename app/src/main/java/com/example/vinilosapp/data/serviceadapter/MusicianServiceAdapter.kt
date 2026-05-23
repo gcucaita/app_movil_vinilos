@@ -10,4 +10,5 @@ class MusicianServiceAdapter(
 ) {
     suspend fun getMusicians(): Response<List<Performer>> = apiService.getMusicians()
     suspend fun getMusician(id: Int): Response<Performer> = apiService.getMusician(id)
+    suspend fun getBands(): Response<List<Performer>> = apiService.getBands()
 }

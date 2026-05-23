@@ -3,11 +3,14 @@ package com.example.vinilosapp.presentation.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.example.vinilosapp.data.cache.CacheManager
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
+import com.example.vinilosapp.data.network.request.CreateTrackRequest
 import com.example.vinilosapp.data.repository.AlbumRepository
 import com.example.vinilosapp.data.serviceadapter.AlbumServiceAdapter
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
+import com.example.vinilosapp.domain.model.Track
 import com.example.vinilosapp.presentation.uistate.AlbumListUiState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -100,8 +103,14 @@ class AlbumListViewModelTest {
     ) : VinilosApiService {
         override suspend fun getAlbums(): Response<List<Album>> = onGetAlbums()
         override suspend fun getAlbum(id: Int): Response<Album> = error("no aplica")
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("no aplica")
         override suspend fun getCollectors(): Response<List<Collector>> = Response.success(emptyList())
+
+        override suspend fun getCollector(id: Int): Response<Collector> = error("getCollector no aplica")
         override suspend fun getMusicians(): Response<List<Performer>> = Response.success(emptyList())
         override suspend fun getMusician(id: Int): Response<Performer> = error("no aplica")
+        override suspend fun addTrack(albumId: Int, request: CreateTrackRequest): Response<Track> = error("addTrack no aplica")
+        override suspend fun getBands(): Response<List<Performer>> = Response.success(emptyList())
+        override suspend fun addPerformerToAlbum(albumId: Int, performerId: Int): Response<Album> = error("addPerformerToAlbum no aplica")
     }
 }

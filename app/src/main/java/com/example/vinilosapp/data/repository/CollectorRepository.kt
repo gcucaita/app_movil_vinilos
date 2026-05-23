@@ -48,6 +48,26 @@ class CollectorRepository(
         return null
     }
 
+    suspend fun getCollector(id: Int): Collector? {
+        incrementIdlingResource()
+        return try {
+            val response = collectorServiceAdapter.getCollector(id)
+            if (response.isSuccessful) {
+                val collector = response.body()
+                logDebug("Collector received: $collector")
+                collector
+            } else {
+                logError("API Error Response: ${response.errorBody()?.string()}")
+                null
+            }
+        } catch (e: Exception) {
+            logError("Network Exception: ${e.message}", e)
+            null
+        } finally {
+            decrementIdlingResource()
+        }
+    }
+
     private fun incrementIdlingResource() {
         runCatching { EspressoIdlingResource.increment() }
     }

@@ -1,9 +1,12 @@
 package com.example.vinilosapp.data.serviceadapter
 
 import com.example.vinilosapp.data.network.VinilosApiService
+import com.example.vinilosapp.data.network.request.CreateAlbumRequest
+import com.example.vinilosapp.data.network.request.CreateTrackRequest
 import com.example.vinilosapp.domain.model.Album
 import com.example.vinilosapp.domain.model.Collector
 import com.example.vinilosapp.domain.model.Performer
+import com.example.vinilosapp.domain.model.Track
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
@@ -44,7 +47,11 @@ class MusicianServiceAdapterTest {
 
         override suspend fun getAlbum(id: Int): Response<Album> = error("getAlbum no aplica")
 
+        override suspend fun createAlbum(request: CreateAlbumRequest): Response<Album> = error("createAlbum no aplica")
+
         override suspend fun getCollectors(): Response<List<Collector>> = error("getCollectors no aplica")
+
+        override suspend fun getCollector(id: Int): Response<Collector> = error("getCollector no aplica")
 
         override suspend fun getMusicians(): Response<List<Performer>> {
             getMusiciansCalls++
@@ -52,5 +59,11 @@ class MusicianServiceAdapterTest {
         }
         
         override suspend fun getMusician(id: Int): Response<Performer> = error("getMusician no aplica")
+
+        override suspend fun addTrack(albumId: Int, request: CreateTrackRequest): Response<Track> = error("addTrack no aplica")
+
+        override suspend fun getBands(): Response<List<Performer>> = Response.success(emptyList())
+
+        override suspend fun addPerformerToAlbum(albumId: Int, performerId: Int): Response<Album> = error("addPerformerToAlbum no aplica")
     }
 }
