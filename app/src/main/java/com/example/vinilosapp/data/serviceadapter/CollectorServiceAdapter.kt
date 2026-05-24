@@ -9,4 +9,5 @@ class CollectorServiceAdapter(
     private val apiService: VinilosApiService = RetrofitInstance.api
 ) {
     suspend fun getCollectors(): Response<List<Collector>> = apiService.getCollectors()
+    suspend fun getCollector(id: Int): Response<Collector> = apiService.getCollector(id)
 }
