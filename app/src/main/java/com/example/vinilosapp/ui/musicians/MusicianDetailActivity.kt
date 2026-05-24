@@ -19,12 +19,10 @@ class MusicianDetailActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = ActivityMusicianDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val musicianId = intent.getIntExtra("musicianId", -1)
-
         if (musicianId == -1) {
             Toast.makeText(this, "Artista no encontrado", Toast.LENGTH_SHORT).show()
             finish()

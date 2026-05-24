@@ -22,6 +22,7 @@ La forma recomendada de probar la aplicación es descargando el APK publicado en
 
    ```
    vinilos-app-v.2.0.0.apk
+   vinilos-app-v.2.0.0.apk
 
    ```
 
@@ -261,6 +262,33 @@ app/src/
 
 ---
 
+## Troubleshooting
+
+### ❌ El reporte dice "0% de cobertura"
+**Solución**: Asegurarse de haber ejecutado `testDebugUnitTest` y `connectedDebugAndroidTest` antes de `jacocoTestReport`.
+
+### ❌ `connectedDebugAndroidTest` falla con "Unable to find instrumentation target"
+**Solución**: Verificar que haya un emulador corriendo con API 34. Ejecutar en otra ventana de PowerShell:
+```powershell
+adb devices
+```
+
+### ❌ Los tests de Espresso timeout o fallan
+**Solución**: Probar con un emulador con más recursos (8GB RAM, 4 cores). Los tests tardan de 3-5 minutos.
+
+### ❌ `gradlew.bat` no es reconocido
+**Solución**: Asegurarse de estar en la carpeta raíz del proyecto donde está `gradlew.bat`. Si aún falla, usar:
+```powershell
+gradlew.bat testDebugUnitTest
+```
+
+### ❌ Error "gradle wrapper not found"
+**Solución**: Descargar el wrapper:
+```powershell
+gradle wrapper --gradle-version 8.3
+```
+
+---
 ## Troubleshooting
 
 ### ❌ El reporte dice "0% de cobertura"

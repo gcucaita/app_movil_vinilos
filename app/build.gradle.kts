@@ -56,6 +56,10 @@ jacoco {
     toolVersion = "0.8.11"
 }
 
+jacoco {
+    toolVersion = "0.8.11"
+}
+
 dependencies {
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
